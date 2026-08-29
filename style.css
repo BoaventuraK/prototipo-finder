@@ -2,56 +2,183 @@
     --bg-color: #f7f7f7;
     --sidebar-bg: #2c2c2c;
     --sidebar-text: #ffffff;
-    --accent-color: #E95420; /* Laranja Ubuntu */
+    --accent-color: #E95420;
+    /* Laranja Ubuntu */
     --text-color: #333333;
     --item-hover: #e0e0e0;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Ubuntu', sans-serif; }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Ubuntu', sans-serif;
+}
 
-body { background-color: #dcdcdc; display: flex; justify-content: center; align-items: center; height: 100vh; }
+body {
+    background-color: #dcdcdc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 
 .window {
-    width: 900px; height: 600px;
+    width: 900px;
+    height: 600px;
     background: var(--bg-color);
     border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     display: flex;
     overflow: hidden;
 }
 
+
 /* Sidebar */
-.sidebar { width: 220px; background: var(--sidebar-bg); color: var(--sidebar-text); padding: 20px 0; }
-.sidebar ul { list-style: none; }
-.sidebar li { padding: 12px 20px; cursor: pointer; transition: 0.2s; }
-.sidebar li:hover { background: rgba(255,255,255,0.1); }
-.sidebar li.active { background: rgba(255,255,255,0.2); border-left: 4px solid var(--accent-color); }
-.sidebar li.highlight { color: var(--accent-color); font-weight: bold; }
-.sidebar hr { border: 0; border-top: 1px solid #444; margin: 10px 0; }
+
+.sidebar {
+    width: 220px;
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    padding: 20px 0;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar li {
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.sidebar li:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar li.active {
+    background: rgba(255, 255, 255, 0.2);
+    border-left: 4px solid var(--accent-color);
+}
+
+.sidebar li.highlight {
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+.sidebar hr {
+    border: 0;
+    border-top: 1px solid #444;
+    margin: 10px 0;
+}
+
 
 /* Main Content */
-.main-content { flex: 1; display: flex; flex-direction: column; }
-.toolbar { padding: 15px 20px; background: #fff; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; align-items: center; }
-.path { font-weight: bold; color: #555; }
-.actions select { padding: 6px; border-radius: 5px; border: 1px solid #ccc; outline: none; margin-left: 10px; }
+
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.toolbar {
+    padding: 15px 20px;
+    background: #fff;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.path {
+    font-weight: bold;
+    color: #555;
+}
+
+.actions select {
+    padding: 6px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    margin-left: 10px;
+}
+
 
 /* Views */
-.view-area { flex: 1; padding: 20px; overflow-y: auto; }
-.hidden { display: none !important; }
+
+.view-area {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.hidden {
+    display: none !important;
+}
+
 
 /* Grid de Arquivos */
-.grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 20px; align-content: start; }
-.item { text-align: center; padding: 15px 10px; border-radius: 8px; cursor: pointer; transition: 0.2s; position: relative; }
-.item:hover { background: var(--item-hover); }
-.item .icon { font-size: 40px; margin-bottom: 10px; }
-.item .name { font-size: 13px; word-break: break-all; }
+
+.grid-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 20px;
+    align-content: start;
+}
+
+.item {
+    text-align: center;
+    padding: 15px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+    position: relative;
+}
+
+.item:hover {
+    background: var(--item-hover);
+}
+
+.item .icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.item .name {
+    font-size: 13px;
+    word-break: break-all;
+}
+
 
 /* Limpeza (List View) */
-.list-view { margin-top: 15px; }
-.cleanup-item { display: flex; justify-content: space-between; padding: 15px; background: #fff; border-bottom: 1px solid #eee; border-radius: 5px; margin-bottom: 10px; }
-.cleanup-item button { background: var(--accent-color); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+
+.list-view {
+    margin-top: 15px;
+}
+
+.cleanup-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.cleanup-item button {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 
 /* Tooltip do Preview (Nova Funcionalidade) */
+
 .tooltip {
     position: absolute;
     background: rgba(0, 0, 0, 0.85);
@@ -62,6 +189,104 @@ body { background-color: #dcdcdc; display: flex; justify-content: center; align-
     pointer-events: none;
     z-index: 1000;
     width: max-content;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
-.tooltip ul { list-style: none; margin-top: 5px; color: #ccc; }
+
+.tooltip ul {
+    list-style: none;
+    margin-top: 5px;
+    color: #ccc;
+}
+
+
+/* =========================================
+   Responsividade para Dispositivos Móveis
+   ========================================= */
+
+@media (max-width: 768px) {
+    /* Ocupar a tela inteira */
+    body {
+        padding: 0;
+        background-color: var(--bg-color);
+    }
+    .window {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+        /* Inverte a ordem: joga a sidebar para o fundo da tela */
+        flex-direction: column-reverse;
+    }
+    /* Transforma a Sidebar em uma "Bottom Bar" (Barra Inferior) */
+    .sidebar {
+        width: 100%;
+        padding: 0;
+        border-top: 1px solid #222;
+        z-index: 10;
+    }
+    .sidebar ul {
+        display: flex;
+        justify-content: space-around;
+        overflow-x: auto;
+        /* Permite scroll horizontal se houver muitos itens */
+        white-space: nowrap;
+    }
+    .sidebar li {
+        flex: 1;
+        text-align: center;
+        padding: 15px 10px;
+        font-size: 14px;
+        border-left: none;
+        /* Remove a borda lateral usada no desktop */
+    }
+    /* Ajusta o indicador de aba ativa para a parte inferior/superior */
+    .sidebar li.active {
+        border-left: none;
+        border-top: 4px solid var(--accent-color);
+        background: rgba(255, 255, 255, 0.05);
+    }
+    .sidebar hr {
+        display: none;
+        /* Oculta a divisória no mobile para poupar espaço */
+    }
+    /* Reorganiza o Cabeçalho e os Filtros */
+    .toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 15px;
+    }
+    .actions {
+        display: flex;
+        flex-wrap: wrap;
+        /* Permite que os selects quebrem a linha */
+        gap: 8px;
+        width: 100%;
+    }
+    .actions select {
+        flex: 1;
+        /* Faz os selects dividirem o espaço disponível */
+        margin-left: 0;
+        min-width: 130px;
+        /* Evita que fiquem pequenos demais */
+        font-size: 14px;
+        padding: 8px;
+    }
+    /* Reduz o tamanho dos ícones no Grid para caber mais itens */
+    .grid-view {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 10px;
+        padding: 15px;
+    }
+    .item .icon {
+        font-size: 32px;
+        /* Ícones levemente menores */
+    }
+    .item .name {
+        font-size: 12px;
+    }
+    /* Desativa o Tooltip de Preview em telas menores/touch */
+    .tooltip {
+        display: none !important;
+    }
+}
