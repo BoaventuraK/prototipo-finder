@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubuntu Files - Protótipo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="window">
+        <aside class="sidebar">
+            <ul>
+                <li class="active" onclick="switchTab('files')">🏠 Início</li>
+                <li>📄 Documentos</li>
+                <li>⬇️ Downloads</li>
+                <hr>
+                <li class="highlight" onclick="switchTab('cleanup')">🧹 Liberar Espaço</li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="toolbar" id="main-toolbar">
+                <div class="path">/home/ubuntu</div>
+                <div class="actions">
+                    <select id="folder-order-select" onchange="renderGrid()">
+                    <option value="first">Pastas primeiro</option>
+                    <option value="last">Pastas por último</option>
+                    </select>
+
+                    <select id="filter-select" onchange="renderGrid()">
+                        <option value="all">Todos os tipos</option>
+                        <option value="folder">Pastas</option>
+                        <option value="image">Imagens</option>
+                        <option value="document">Documentos</option>
+                    </select>
+
+                    <select id="sort-select" onchange="renderGrid()">
+                        <option value="name">Ordenar por Nome</option>
+                        <option value="size">Ordenar por Tamanho</option>
+                        <option value="date">Ordenar por Modificação</option>
+                    </select>
+                </div>
+            </header>
+
+            <div id="file-grid" class="view-area grid-view">
+            </div>
+
+            <div id="cleanup-view" class="view-area hidden">
+                <h2>Recomendações de Limpeza</h2>
+                <p>Estes arquivos não são abertos há mais de 6 meses.</p>
+                <div id="cleanup-list" class="list-view">
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="folder-preview" class="tooltip hidden"></div>
+
+    <script src="main.js"></script>
+</body>
+
+</html>
