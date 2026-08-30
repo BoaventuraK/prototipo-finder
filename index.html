@@ -1,34 +1,45 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ubuntu Files - Protótipo</title>
+    <title>Ubuntu Files - Protótipo Final</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div class="window">
+        <!-- Barra Lateral -->
         <aside class="sidebar">
-            <ul>
-                <li class="active" onclick="switchTab('files')">🏠 Início</li>
-                <li>📄 Documentos</li>
-                <li>⬇️ Downloads</li>
+            <ul id="sidebar-menu">
+                <li class="active" onclick="switchTab('files', this); setFocus('all')">🏠 Início</li>
                 <hr>
-                <li class="highlight" onclick="switchTab('cleanup')">🧹 Liberar Espaço</li>
+                <div class="sidebar-title">Modos de Foco</div>
+                <li onclick="switchTab('files', this); setFocus('faculdade')">🎓 Faculdade</li>
+                <li onclick="switchTab('files', this); setFocus('trabalho')">💼 Trabalho</li>
+                <li onclick="switchTab('files', this); setFocus('pessoal')">🏡 Pessoal</li>
+                <hr>
+                <li class="highlight" onclick="switchTab('cleanup', this)">🧹 Liberar Espaço</li>
             </ul>
         </aside>
 
+        <!-- Área Principal -->
         <main class="main-content">
+            <!-- Cabeçalho de Ferramentas -->
             <header class="toolbar" id="main-toolbar">
-                <div class="path">/home/ubuntu</div>
+                <div class="path" id="current-path">/home/ubuntu</div>
                 <div class="actions">
+                    <!-- Alternar Visualização -->
+                    <button class="icon-btn" onclick="toggleViewMode()" title="Alternar Lista/Grafo">🕸️ Grafo</button>
+
+                    <!-- Posição das Pastas -->
                     <select id="folder-order-select" onchange="renderGrid()">
-                    <option value="first">Pastas primeiro</option>
-                    <option value="last">Pastas por último</option>
+                        <option value="first">Pastas primeiro</option>
+                        <option value="last">Pastas por último</option>
                     </select>
 
+                    <!-- Filtro por tipo -->
                     <select id="filter-select" onchange="renderGrid()">
                         <option value="all">Todos os tipos</option>
                         <option value="folder">Pastas</option>
@@ -36,6 +47,7 @@
                         <option value="document">Documentos</option>
                     </select>
 
+                    <!-- Ordenação -->
                     <select id="sort-select" onchange="renderGrid()">
                         <option value="name">Ordenar por Nome</option>
                         <option value="size">Ordenar por Tamanho</option>
@@ -44,18 +56,68 @@
                 </div>
             </header>
 
-            <div id="file-grid" class="view-area grid-view">
+            <!-- Visualização de Arquivos (Grid) -->
+            <div id="file-grid" class="view-area grid-view"></div>
+
+            <!-- Visualização em Grafo (Navegação por Tags) -->
+            <div id="graph-view" class="view-area hidden">
+                <div class="graph-container" id="graph-container"></div>
             </div>
 
+            <!-- Visualização de Limpeza -->
             <div id="cleanup-view" class="view-area hidden">
-                <h2>Recomendações de Limpeza</h2>
-                <p>Estes arquivos não são abertos há mais de 6 meses.</p>
-                <div id="cleanup-list" class="list-view">
-                </div>
+                <h2>Limpeza Inteligente</h2>
+
+                <h3 class="section-title">⚠️ Arquivos Duplicados</h3>
+                <p>Cópias desnecessárias que estão gastando espaço.</p>
+                <div id="cleanup-duplicates" class="list-view"></div>
+
+                <h3 class="section-title">⏳ Pouco Usados / Nunca Abertos</h3>
+                <p>Arquivos não acessados há mais de 6 meses.</p>
+                <div id="cleanup-unused" class="list-view"></div>
             </div>
         </main>
     </div>
+
+    <!-- Tooltip para Preview de Pastas -->
     <div id="folder-preview" class="tooltip hidden"></div>
+
+    <!-- Menu de Contexto (Opções) -->
+    <div id="context-menu" class="context-menu hidden">
+        <ul id="context-options"></ul>
+    </div>
+
+    <!-- Modal: Personalizar Pasta -->
+    <div id="modal-folder" class="modal hidden">
+        <div class="modal-content">
+            <h3>Personalizar Pasta</h3>
+            <label>Ícone (Emoji): <input type="text" id="folder-icon-input" maxlength="2"></label>
+            <label>Cor: <input type="color" id="folder-color-input"></label>
+            <div class="modal-actions">
+                <button onclick="closeModals()">Cancelar</button>
+                <button class="primary" onclick="saveFolderCustomization()">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Converter Arquivo -->
+    <div id="modal-convert" class="modal hidden">
+        <div class="modal-content">
+            <h3>Converter Arquivo</h3>
+            <p id="convert-filename"></p>
+            <label>Formato destino: 
+                <select id="convert-format">
+                    <option value="pdf">PDF (.pdf)</option>
+                    <option value="jpg">Imagem (.jpg)</option>
+                    <option value="zip">Compactado (.zip)</option>
+                </select>
+            </label>
+            <div class="modal-actions">
+                <button onclick="closeModals()">Cancelar</button>
+                <button class="primary" onclick="executeConversion()">Converter</button>
+            </div>
+        </div>
+    </div>
 
     <script src="main.js"></script>
 </body>

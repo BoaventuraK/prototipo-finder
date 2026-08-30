@@ -24,7 +24,7 @@ body {
 }
 
 .window {
-    width: 900px;
+    width: 950px;
     height: 600px;
     background: var(--bg-color);
     border-radius: 10px;
@@ -41,6 +41,8 @@ body {
     background: var(--sidebar-bg);
     color: var(--sidebar-text);
     padding: 20px 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar ul {
@@ -73,6 +75,14 @@ body {
     margin: 10px 0;
 }
 
+.sidebar-title {
+    padding: 10px 20px;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #888;
+    font-weight: bold;
+}
+
 
 /* Main Content */
 
@@ -80,6 +90,7 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .toolbar {
@@ -96,12 +107,30 @@ body {
     color: #555;
 }
 
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .actions select {
     padding: 6px;
     border-radius: 5px;
     border: 1px solid #ccc;
     outline: none;
-    margin-left: 10px;
+}
+
+.icon-btn {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    background: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.icon-btn:hover {
+    background: #eee;
 }
 
 
@@ -150,6 +179,141 @@ body {
     word-break: break-all;
 }
 
+.custom-folder {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+
+/* Botão de Opções no Item */
+
+.item-options {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: none;
+}
+
+.item:hover .item-options {
+    display: block;
+}
+
+.item-options:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+
+/* Menu de Contexto */
+
+.context-menu {
+    position: fixed;
+    background: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    padding: 5px 0;
+    min-width: 170px;
+    z-index: 1000;
+}
+
+.context-menu li {
+    padding: 10px 15px;
+    cursor: pointer;
+    list-style: none;
+    font-size: 14px;
+}
+
+.context-menu li:hover {
+    background: var(--item-hover);
+}
+
+
+/* Tooltip do Preview */
+
+.tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 999;
+    width: max-content;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip ul {
+    list-style: none;
+    margin-top: 5px;
+    color: #ccc;
+}
+
+
+/* Visualização em Grafo (Mind-map Simples) */
+
+.graph-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: center;
+}
+
+.graph-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.graph-tag {
+    background: var(--accent-color);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(233, 84, 32, 0.3);
+    z-index: 2;
+}
+
+.graph-links {
+    display: flex;
+    gap: 15px;
+    border-top: 2px solid #ccc;
+    padding-top: 15px;
+    margin-top: -10px;
+}
+
+.graph-item {
+    background: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 80px;
+}
+
+.graph-item .icon,
+.graph-item .custom-folder {
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 5px auto;
+}
+
 
 /* Limpeza (List View) */
 
@@ -160,6 +324,7 @@ body {
 .cleanup-item {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 15px;
     background: #fff;
     border-bottom: 1px solid #eee;
@@ -176,35 +341,70 @@ body {
     cursor: pointer;
 }
 
-
-/* Tooltip do Preview (Nova Funcionalidade) */
-
-.tooltip {
-    position: absolute;
-    background: rgba(0, 0, 0, 0.85);
-    color: white;
-    padding: 10px;
-    border-radius: 6px;
-    font-size: 12px;
-    pointer-events: none;
-    z-index: 1000;
-    width: max-content;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+.section-title {
+    margin: 20px 0 10px 0;
+    color: #444;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
 }
 
-.tooltip ul {
-    list-style: none;
+
+/* Modais */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal-content input,
+.modal-content select {
+    width: 100%;
+    padding: 8px;
     margin-top: 5px;
-    color: #ccc;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-actions button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-actions button.primary {
+    background: var(--accent-color);
+    color: white;
 }
 
 
-/* =========================================
-   Responsividade para Dispositivos Móveis
-   ========================================= */
+/* Responsividade Mobile */
 
 @media (max-width: 768px) {
-    /* Ocupar a tela inteira */
     body {
         padding: 0;
         background-color: var(--bg-color);
@@ -214,21 +414,22 @@ body {
         height: 100vh;
         border-radius: 0;
         box-shadow: none;
-        /* Inverte a ordem: joga a sidebar para o fundo da tela */
         flex-direction: column-reverse;
     }
-    /* Transforma a Sidebar em uma "Bottom Bar" (Barra Inferior) */
     .sidebar {
         width: 100%;
         padding: 0;
         border-top: 1px solid #222;
         z-index: 10;
+        height: 60px;
+        overflow: hidden;
+        flex-direction: row;
     }
     .sidebar ul {
         display: flex;
-        justify-content: space-around;
+        width: 100%;
+        justify-content: space-between;
         overflow-x: auto;
-        /* Permite scroll horizontal se houver muitos itens */
         white-space: nowrap;
     }
     .sidebar li {
@@ -237,19 +438,16 @@ body {
         padding: 15px 10px;
         font-size: 14px;
         border-left: none;
-        /* Remove a borda lateral usada no desktop */
     }
-    /* Ajusta o indicador de aba ativa para a parte inferior/superior */
     .sidebar li.active {
         border-left: none;
         border-top: 4px solid var(--accent-color);
         background: rgba(255, 255, 255, 0.05);
     }
-    .sidebar hr {
+    .sidebar hr,
+    .sidebar-title {
         display: none;
-        /* Oculta a divisória no mobile para poupar espaço */
     }
-    /* Reorganiza o Cabeçalho e os Filtros */
     .toolbar {
         flex-direction: column;
         align-items: flex-start;
@@ -259,34 +457,36 @@ body {
     .actions {
         display: flex;
         flex-wrap: wrap;
-        /* Permite que os selects quebrem a linha */
         gap: 8px;
         width: 100%;
     }
-    .actions select {
+    .actions select,
+    .actions button {
         flex: 1;
-        /* Faz os selects dividirem o espaço disponível */
-        margin-left: 0;
-        min-width: 130px;
-        /* Evita que fiquem pequenos demais */
+        min-width: 120px;
         font-size: 14px;
         padding: 8px;
     }
-    /* Reduz o tamanho dos ícones no Grid para caber mais itens */
     .grid-view {
         grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
         gap: 10px;
         padding: 15px;
     }
-    .item .icon {
-        font-size: 32px;
-        /* Ícones levemente menores */
+    .item .icon,
+    .custom-folder {
+        font-size: 30px;
+        width: 40px;
+        height: 40px;
     }
     .item .name {
         font-size: 12px;
     }
-    /* Desativa o Tooltip de Preview em telas menores/touch */
+    .item-options {
+        display: block;
+    }
+    /* Mostra os 3 pontinhos sempre no mobile */
     .tooltip {
         display: none !important;
     }
+    /* Desativa o hover no mobile */
 }
