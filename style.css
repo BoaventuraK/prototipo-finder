@@ -2,30 +2,31 @@
     --bg-color: #f7f7f7;
     --sidebar-bg: #2c2c2c;
     --sidebar-text: #ffffff;
-    --accent-color: #E95420;
-    /* Laranja Ubuntu */
+    --accent-color: #e95420;
     --text-color: #333333;
     --item-hover: #e0e0e0;
+    --border-color: #d5d5d5;
 }
 
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: "Ubuntu", Arial, sans-serif;
 }
 
 body {
-    background-color: #dcdcdc;
+    background: #dcdcdc;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
+    color: var(--text-color);
 }
 
 .window {
-    width: 950px;
-    height: 600px;
+    width: 1100px;
+    height: 680px;
     background: var(--bg-color);
     border-radius: 10px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -34,15 +35,14 @@ body {
 }
 
 
-/* Sidebar */
+/* SIDEBAR */
 
 .sidebar {
     width: 220px;
     background: var(--sidebar-bg);
     color: var(--sidebar-text);
     padding: 20px 0;
-    display: flex;
-    flex-direction: column;
+    flex-shrink: 0;
 }
 
 .sidebar ul {
@@ -84,44 +84,53 @@ body {
 }
 
 
-/* Main Content */
+/* MAIN */
 
 .main-content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    position: relative;
+    min-width: 0;
 }
 
+
+/* TOOLBAR */
+
 .toolbar {
-    padding: 15px 20px;
+    min-height: 55px;
+    padding: 10px 15px;
     background: #fff;
     border-bottom: 1px solid #ccc;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 15px;
 }
 
 .path {
     font-weight: bold;
     color: #555;
+    white-space: nowrap;
 }
 
 .actions {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
+    flex-wrap: wrap;
 }
 
 .actions select {
-    padding: 6px;
+    padding: 6px 8px;
     border-radius: 5px;
     border: 1px solid #ccc;
+    background: white;
     outline: none;
 }
 
-.icon-btn {
-    padding: 6px 10px;
+.icon-btn,
+.primary-btn {
+    padding: 7px 10px;
     border: 1px solid #ccc;
     background: #fff;
     border-radius: 5px;
@@ -133,13 +142,23 @@ body {
     background: #eee;
 }
 
+.primary-btn {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
 
-/* Views */
+.primary-btn:hover {
+    opacity: 0.9;
+}
+
+
+/* VIEWS */
 
 .view-area {
     flex: 1;
     padding: 20px;
-    overflow-y: auto;
+    overflow: auto;
 }
 
 .hidden {
@@ -147,22 +166,23 @@ body {
 }
 
 
-/* Grid de Arquivos */
+/* GRID */
 
 .grid-view {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+    gap: 12px;
     align-content: start;
 }
 
 .item {
     text-align: center;
-    padding: 15px 10px;
+    padding: 13px 8px;
     border-radius: 8px;
     cursor: pointer;
     transition: 0.2s;
     position: relative;
+    min-height: 125px;
 }
 
 .item:hover {
@@ -171,12 +191,18 @@ body {
 
 .item .icon {
     font-size: 40px;
-    margin-bottom: 10px;
+    margin-bottom: 7px;
 }
 
 .item .name {
     font-size: 13px;
-    word-break: break-all;
+    word-break: break-word;
+}
+
+.item .metadata {
+    color: #888;
+    font-size: 10px;
+    margin-top: 5px;
 }
 
 .custom-folder {
@@ -187,17 +213,36 @@ body {
     height: 50px;
     border-radius: 8px;
     font-size: 30px;
-    margin-bottom: 10px;
+    margin-bottom: 7px;
 }
 
 
-/* Botão de Opções no Item */
+/* TAGS NOS ARQUIVOS */
+
+.item-tags {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-top: 6px;
+}
+
+.item-tag {
+    font-size: 9px;
+    padding: 2px 5px;
+    border-radius: 8px;
+    background: #ececec;
+    color: #555;
+}
+
+
+/* OPTIONS */
 
 .item-options {
     position: absolute;
-    top: 5px;
-    right: 5px;
-    background: rgba(0, 0, 0, 0.1);
+    top: 4px;
+    right: 4px;
+    background: rgba(0, 0, 0, 0.08);
     border: none;
     border-radius: 50%;
     width: 24px;
@@ -215,7 +260,7 @@ body {
 }
 
 
-/* Menu de Contexto */
+/* CONTEXT MENU */
 
 .context-menu {
     position: fixed;
@@ -223,7 +268,7 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     border-radius: 6px;
     padding: 5px 0;
-    min-width: 170px;
+    min-width: 190px;
     z-index: 1000;
 }
 
@@ -239,11 +284,11 @@ body {
 }
 
 
-/* Tooltip do Preview */
+/* TOOLTIP */
 
 .tooltip {
     position: absolute;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.9);
     color: white;
     padding: 10px;
     border-radius: 6px;
@@ -251,7 +296,6 @@ body {
     pointer-events: none;
     z-index: 999;
     width: max-content;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .tooltip ul {
@@ -261,61 +305,121 @@ body {
 }
 
 
-/* Visualização em Grafo (Mind-map Simples) */
+/* GRAFO */
+
+#graph-view {
+    padding: 0;
+    overflow: hidden;
+}
+
+.graph-toolbar {
+    height: 65px;
+    padding: 10px 18px;
+    background: white;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.graph-toolbar strong {
+    display: block;
+    font-size: 15px;
+}
+
+#graph-info {
+    font-size: 11px;
+    color: #888;
+}
 
 .graph-container {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 65px);
+    background: radial-gradient(circle at 1px 1px, #ddd 1px, transparent 0);
+    background-size: 25px 25px;
+    overflow: hidden;
+}
+
+
+/* SVG DO GRAFO */
+
+.graph-svg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+}
+
+.graph-line {
+    stroke: #aaa;
+    stroke-width: 2;
+}
+
+.graph-line.highlight {
+    stroke: var(--accent-color);
+    stroke-width: 3;
+}
+
+
+/* NÓS */
+
+.graph-node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    min-width: 90px;
+    max-width: 125px;
+    padding: 8px;
+    border-radius: 10px;
+    background: white;
+    border: 2px solid #ccc;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    cursor: pointer;
+    z-index: 2;
+    user-select: none;
+}
+
+.graph-node:hover {
+    border-color: var(--accent-color);
+    transform: translate(-50%, -50%) scale(1.05);
+}
+
+.graph-node.tag-node {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+    border-radius: 50%;
+    width: 90px;
+    height: 90px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 40px;
+    flex-direction: column;
     justify-content: center;
 }
 
-.graph-node {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
+.graph-node .node-icon {
+    font-size: 25px;
 }
 
-.graph-tag {
-    background: var(--accent-color);
-    color: white;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: 14px;
-    box-shadow: 0 4px 10px rgba(233, 84, 32, 0.3);
-    z-index: 2;
+.graph-node .node-name {
+    font-size: 11px;
+    margin-top: 3px;
+    word-break: break-word;
 }
 
-.graph-links {
-    display: flex;
-    gap: 15px;
-    border-top: 2px solid #ccc;
-    padding-top: 15px;
-    margin-top: -10px;
+.graph-node.tag-node .node-icon {
+    font-size: 18px;
 }
 
-.graph-item {
-    background: #fff;
-    padding: 10px;
-    border-radius: 8px;
+.graph-node.tag-node .node-name {
     font-size: 12px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    width: 80px;
-}
-
-.graph-item .icon,
-.graph-item .custom-folder {
-    font-size: 24px;
-    width: 40px;
-    height: 40px;
-    margin: 0 auto 5px auto;
+    font-weight: bold;
 }
 
 
-/* Limpeza (List View) */
+/* LIMPEZA */
 
 .list-view {
     margin-top: 15px;
@@ -342,14 +446,14 @@ body {
 }
 
 .section-title {
-    margin: 20px 0 10px 0;
+    margin: 20px 0 10px;
     color: #444;
     border-bottom: 1px solid #ccc;
     padding-bottom: 5px;
 }
 
 
-/* Modais */
+/* MODAIS */
 
 .modal {
     position: fixed;
@@ -366,12 +470,23 @@ body {
 
 .modal-content {
     background: #fff;
-    padding: 20px;
+    padding: 22px;
     border-radius: 10px;
-    width: 300px;
+    width: 330px;
     display: flex;
     flex-direction: column;
     gap: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h3 {
+    font-size: 18px;
+}
+
+.modal-description {
+    color: #666;
+    font-size: 12px;
+    line-height: 1.5;
 }
 
 .modal-content input,
@@ -402,12 +517,81 @@ body {
 }
 
 
-/* Responsividade Mobile */
+/* TAG MANAGER */
+
+.tag-input-row {
+    display: flex;
+    gap: 5px;
+}
+
+.tag-input-row input {
+    flex: 1;
+}
+
+.tag-input-row button {
+    width: 40px;
+    margin-top: 5px;
+    border: none;
+    background: var(--accent-color);
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.selected-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 8px;
+    min-height: 25px;
+}
+
+.tag-chip {
+    background: #eee;
+    padding: 5px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+}
+
+.tag-chip button {
+    border: none;
+    background: none;
+    margin-left: 4px;
+    cursor: pointer;
+}
+
+.available-tags {
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+}
+
+#available-tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 8px;
+}
+
+.available-tag {
+    border: 1px solid #ccc;
+    background: #fafafa;
+    padding: 5px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.available-tag:hover {
+    background: #eee;
+}
+
+
+/* MOBILE */
 
 @media (max-width: 768px) {
     body {
         padding: 0;
-        background-color: var(--bg-color);
+        background: var(--bg-color);
     }
     .window {
         width: 100%;
@@ -418,31 +602,20 @@ body {
     }
     .sidebar {
         width: 100%;
+        height: 60px;
         padding: 0;
         border-top: 1px solid #222;
-        z-index: 10;
-        height: 60px;
-        overflow: hidden;
-        flex-direction: row;
     }
     .sidebar ul {
         display: flex;
         width: 100%;
-        justify-content: space-between;
         overflow-x: auto;
         white-space: nowrap;
     }
     .sidebar li {
-        flex: 1;
-        text-align: center;
         padding: 15px 10px;
-        font-size: 14px;
-        border-left: none;
-    }
-    .sidebar li.active {
-        border-left: none;
-        border-top: 4px solid var(--accent-color);
-        background: rgba(255, 255, 255, 0.05);
+        font-size: 12px;
+        text-align: center;
     }
     .sidebar hr,
     .sidebar-title {
@@ -451,26 +624,18 @@ body {
     .toolbar {
         flex-direction: column;
         align-items: flex-start;
-        gap: 12px;
-        padding: 15px;
     }
     .actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
         width: 100%;
     }
     .actions select,
     .actions button {
         flex: 1;
-        min-width: 120px;
-        font-size: 14px;
-        padding: 8px;
+        min-width: 110px;
     }
     .grid-view {
         grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-        gap: 10px;
-        padding: 15px;
+        gap: 8px;
     }
     .item .icon,
     .custom-folder {
@@ -478,15 +643,16 @@ body {
         width: 40px;
         height: 40px;
     }
-    .item .name {
-        font-size: 12px;
-    }
     .item-options {
         display: block;
     }
-    /* Mostra os 3 pontinhos sempre no mobile */
-    .tooltip {
-        display: none !important;
+    .graph-toolbar {
+        height: auto;
+        gap: 10px;
+        flex-direction: column;
+        align-items: flex-start;
     }
-    /* Desativa o hover no mobile */
+    .graph-container {
+        height: calc(100% - 90px);
+    }
 }

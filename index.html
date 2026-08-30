@@ -4,122 +4,330 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ubuntu Files - Protótipo Final</title>
+    <title>Ubuntu Files - Protótipo</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+
     <div class="window">
-        <!-- Barra Lateral -->
+
         <aside class="sidebar">
             <ul id="sidebar-menu">
-                <li class="active" onclick="switchTab('files', this); setFocus('all')">🏠 Início</li>
+
+                <li class="active" onclick="switchTab('files', this); setFocus('all')">
+                    🏠 Início
+                </li>
+
                 <hr>
+
                 <div class="sidebar-title">Modos de Foco</div>
-                <li onclick="switchTab('files', this); setFocus('faculdade')">🎓 Faculdade</li>
-                <li onclick="switchTab('files', this); setFocus('trabalho')">💼 Trabalho</li>
-                <li onclick="switchTab('files', this); setFocus('pessoal')">🏡 Pessoal</li>
+
+                <li onclick="switchTab('files', this); setFocus('faculdade')">
+                    🎓 Faculdade
+                </li>
+
+                <li onclick="switchTab('files', this); setFocus('trabalho')">
+                    💼 Trabalho
+                </li>
+
+                <li onclick="switchTab('files', this); setFocus('pessoal')">
+                    🏡 Pessoal
+                </li>
+
                 <hr>
-                <li class="highlight" onclick="switchTab('cleanup', this)">🧹 Liberar Espaço</li>
+
+                <li class="highlight" onclick="switchTab('cleanup', this)">
+                    🧹 Liberar Espaço
+                </li>
+
             </ul>
         </aside>
 
-        <!-- Área Principal -->
+
         <main class="main-content">
-            <!-- Cabeçalho de Ferramentas -->
+
             <header class="toolbar" id="main-toolbar">
-                <div class="path" id="current-path">/home/ubuntu</div>
+
+                <div class="path" id="current-path">
+                    /home/ubuntu
+                </div>
+
                 <div class="actions">
-                    <!-- Alternar Visualização -->
-                    <button class="icon-btn" onclick="toggleViewMode()" title="Alternar Lista/Grafo">🕸️ Grafo</button>
 
-                    <!-- Posição das Pastas -->
+                    <button class="icon-btn" onclick="toggleViewMode()" title="Alternar Lista/Grafo">
+                    🕸️ Grafo
+                </button>
+
+                    <button class="icon-btn" onclick="openTagManager()" title="Gerenciar tags">
+                    🏷️ Tags
+                </button>
+
                     <select id="folder-order-select" onchange="renderGrid()">
-                        <option value="first">Pastas primeiro</option>
-                        <option value="last">Pastas por último</option>
-                    </select>
+                    <option value="first">Pastas primeiro</option>
+                    <option value="last">Pastas por último</option>
+                </select>
 
-                    <!-- Filtro por tipo -->
                     <select id="filter-select" onchange="renderGrid()">
-                        <option value="all">Todos os tipos</option>
-                        <option value="folder">Pastas</option>
-                        <option value="image">Imagens</option>
-                        <option value="document">Documentos</option>
-                    </select>
+                    <option value="all">Todos os tipos</option>
+                    <option value="folder">Pastas</option>
+                    <option value="image">Imagens</option>
+                    <option value="document">Documentos</option>
+                    <option value="pdf">PDFs</option>
+                </select>
 
-                    <!-- Ordenação -->
                     <select id="sort-select" onchange="renderGrid()">
-                        <option value="name">Ordenar por Nome</option>
-                        <option value="size">Ordenar por Tamanho</option>
-                        <option value="date">Ordenar por Modificação</option>
-                    </select>
+                    <option value="name">Ordenar por Nome</option>
+                    <option value="size">Ordenar por Tamanho</option>
+                    <option value="date">Ordenar por Modificação</option>
+                </select>
+
                 </div>
             </header>
 
-            <!-- Visualização de Arquivos (Grid) -->
+
+            <!-- ARQUIVOS -->
+
             <div id="file-grid" class="view-area grid-view"></div>
 
-            <!-- Visualização em Grafo (Navegação por Tags) -->
+
+            <!-- GRAFO -->
+
             <div id="graph-view" class="view-area hidden">
-                <div class="graph-container" id="graph-container"></div>
+
+                <div class="graph-toolbar">
+
+                    <div>
+                        <strong>Grafo de arquivos</strong>
+                        <span id="graph-info">
+                        Relacionamentos através de tags
+                    </span>
+                    </div>
+
+                    <button class="primary-btn" onclick="openTagManager()">
+                    🏷️ Adicionar tags
+                </button>
+
+                </div>
+
+                <div class="graph-container" id="graph-container">
+                </div>
+
             </div>
 
-            <!-- Visualização de Limpeza -->
+
+            <!-- LIMPEZA -->
+
             <div id="cleanup-view" class="view-area hidden">
+
                 <h2>Limpeza Inteligente</h2>
 
-                <h3 class="section-title">⚠️ Arquivos Duplicados</h3>
-                <p>Cópias desnecessárias que estão gastando espaço.</p>
-                <div id="cleanup-duplicates" class="list-view"></div>
+                <h3 class="section-title">
+                    ⚠️ Arquivos Duplicados
+                </h3>
 
-                <h3 class="section-title">⏳ Pouco Usados / Nunca Abertos</h3>
-                <p>Arquivos não acessados há mais de 6 meses.</p>
-                <div id="cleanup-unused" class="list-view"></div>
+                <p>
+                    Cópias desnecessárias que estão gastando espaço.
+                </p>
+
+                <div id="cleanup-duplicates" class="list-view">
+                </div>
+
+
+                <h3 class="section-title">
+                    ⏳ Pouco Usados / Nunca Abertos
+                </h3>
+
+                <p>
+                    Arquivos não acessados há mais de 6 meses.
+                </p>
+
+                <div id="cleanup-unused" class="list-view">
+                </div>
+
             </div>
+
         </main>
+
     </div>
 
-    <!-- Tooltip para Preview de Pastas -->
-    <div id="folder-preview" class="tooltip hidden"></div>
 
-    <!-- Menu de Contexto (Opções) -->
+    <!-- TOOLTIP -->
+
+    <div id="folder-preview" class="tooltip hidden">
+    </div>
+
+
+    <!-- MENU DE CONTEXTO -->
+
     <div id="context-menu" class="context-menu hidden">
+
         <ul id="context-options"></ul>
+
     </div>
 
-    <!-- Modal: Personalizar Pasta -->
+
+    <!-- MODAL PERSONALIZAR PASTA -->
+
     <div id="modal-folder" class="modal hidden">
+
         <div class="modal-content">
+
             <h3>Personalizar Pasta</h3>
-            <label>Ícone (Emoji): <input type="text" id="folder-icon-input" maxlength="2"></label>
-            <label>Cor: <input type="color" id="folder-color-input"></label>
+
+            <label>
+            Ícone (Emoji):
+            <input
+                type="text"
+                id="folder-icon-input"
+                maxlength="2">
+        </label>
+
+            <label>
+            Cor:
+            <input
+                type="color"
+                id="folder-color-input">
+        </label>
+
             <div class="modal-actions">
-                <button onclick="closeModals()">Cancelar</button>
-                <button class="primary" onclick="saveFolderCustomization()">Salvar</button>
+
+                <button onclick="closeModals()">
+                Cancelar
+            </button>
+
+                <button class="primary" onclick="saveFolderCustomization()">
+                Salvar
+            </button>
+
             </div>
+
         </div>
+
     </div>
 
-    <!-- Modal: Converter Arquivo -->
-    <div id="modal-convert" class="modal hidden">
-        <div class="modal-content">
-            <h3>Converter Arquivo</h3>
-            <p id="convert-filename"></p>
-            <label>Formato destino: 
-                <select id="convert-format">
-                    <option value="pdf">PDF (.pdf)</option>
-                    <option value="jpg">Imagem (.jpg)</option>
-                    <option value="zip">Compactado (.zip)</option>
-                </select>
-            </label>
-            <div class="modal-actions">
-                <button onclick="closeModals()">Cancelar</button>
-                <button class="primary" onclick="executeConversion()">Converter</button>
+
+    <!-- MODAL TAGS -->
+
+    <div id="modal-tags" class="modal hidden">
+
+        <div class="modal-content tag-modal">
+
+            <h3>🏷️ Gerenciar Tags</h3>
+
+            <p class="modal-description">
+                Selecione um arquivo e adicione manualmente as tags. Arquivos com tags em comum serão conectados no grafo.
+            </p>
+
+            <label>
+            Arquivo:
+
+            <select id="tag-file-select">
+            </select>
+        </label>
+
+            <label>
+            Nova tag:
+
+            <div class="tag-input-row">
+
+                <input
+                    type="text"
+                    id="new-tag-input"
+                    placeholder="Ex: faculdade">
+
+                <button
+                    onclick="addTagToSelectedFile()">
+                    +
+                </button>
+
             </div>
+        </label>
+
+            <div>
+
+                <strong>Tags do arquivo:</strong>
+
+                <div id="selected-file-tags" class="selected-tags">
+                </div>
+
+            </div>
+
+            <div class="available-tags">
+
+                <strong>Tags existentes:</strong>
+
+                <div id="available-tags-list"></div>
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button onclick="closeModals()">
+                Fechar
+            </button>
+
+                <button class="primary" onclick="saveTags()">
+                Salvar
+            </button>
+
+            </div>
+
         </div>
+
     </div>
+
+
+    <!-- MODAL CONVERSÃO -->
+
+    <div id="modal-convert" class="modal hidden">
+
+        <div class="modal-content">
+
+            <h3>Converter Arquivo</h3>
+
+            <p id="convert-filename"></p>
+
+            <label>
+            Formato destino:
+
+            <select id="convert-format">
+
+                <option value="pdf">
+                    PDF (.pdf)
+                </option>
+
+                <option value="jpg">
+                    Imagem (.jpg)
+                </option>
+
+                <option value="zip">
+                    Compactado (.zip)
+                </option>
+
+            </select>
+
+        </label>
+
+            <div class="modal-actions">
+
+                <button onclick="closeModals()">
+                Cancelar
+            </button>
+
+                <button class="primary" onclick="executeConversion()">
+                Converter
+            </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
 
     <script src="main.js"></script>
+
 </body>
 
 </html>
