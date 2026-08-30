@@ -85,6 +85,32 @@
                 </div>
             </header>
 
+            <section id="semantic-search" class="search-panel" aria-label="Busca semântica de arquivos">
+                <div class="search-field">
+                    <span aria-hidden="true">🔎</span>
+                    <input
+                        id="semantic-search-input"
+                        type="search"
+                        placeholder="Buscar por nome, tag ou ideia relacionada..."
+                        autocomplete="off"
+                        oninput="handleSemanticSearch()"
+                        onkeydown="handleSemanticSearchKeydown(event)"
+                        aria-describedby="search-feedback">
+                    <button
+                        id="clear-search-button"
+                        class="clear-search hidden"
+                        type="button"
+                        onclick="clearSemanticSearch()"
+                        aria-label="Limpar busca">
+                        ×
+                    </button>
+                </div>
+
+                <p id="search-feedback" class="search-feedback" aria-live="polite">
+                    A busca também encontra conceitos relacionados. Ex.: “robótica” encontra ROS2 e programação.
+                </p>
+            </section>
+
 
             <!-- ARQUIVOS -->
 

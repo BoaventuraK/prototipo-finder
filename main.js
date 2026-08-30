@@ -294,6 +294,25 @@ let graphMode = false;
 let graphResizeTimer = null;
 
 
+/*
+   Cada grupo representa uma dimensão semântica. Arquivo e consulta
+   são transformados em pequenos vetores de conceitos; termos do mesmo
+   grupo ficam próximos mesmo quando não possuem a mesma escrita.
+*/
+const semanticConcepts = [
+    ["leite", "queijo", "manteiga", "iogurte", "laticínio", "laticínios"],
+    ["faculdade", "universidade", "uneb", "estudo", "estudos", "aula", "acadêmico"],
+    ["trabalho", "emprego", "profissional", "projeto", "projetos", "equipe"],
+    ["programação", "código", "software", "algoritmo", "algoritmos", "python", "database", "banco de dados"],
+    ["robótica", "robô", "ros2", "automação", "programação"],
+    ["foto", "fotos", "imagem", "imagens", "formatura", "evento"],
+    ["viagem", "praia", "turismo", "férias", "passeio"],
+    ["pessoal", "casa", "família", "particular"],
+    ["documento", "documentos", "pdf", "relatório", "texto", "currículo"],
+    ["rede", "redes", "internet", "conexão", "computadores"]
+];
+
+
 /* =========================================================
    INICIALIZAÇÃO
    ========================================================= */
@@ -349,6 +368,10 @@ function switchTab(tab, element) {
         .getElementById("cleanup-view")
         .classList.toggle("hidden", tab !== "cleanup");
 
+    document
+        .getElementById("semantic-search")
+        .classList.toggle("hidden", tab === "cleanup");
+
     if (tab === "files") {
         renderCurrentView();
     }
@@ -373,6 +396,179 @@ function setFocus(focus) {
 
 
 /* =========================================================
+   BUSCA SEMÂNTICA LOCAL
+   ========================================================= */
+
+function normalizeSemanticText(text) {
+
+    return String(text)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[_\-.]+/g, " ")
+        .replace(/[^a-z0-9\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+
+function containsSemanticTerm(text, term) {
+
+    const normalizedText = ` ${normalizeSemanticText(text)} `;
+    const normalizedTerm = normalizeSemanticText(term);
+
+    return normalizedTerm && normalizedText.includes(` ${normalizedTerm} `);
+}
+
+
+function buildSemanticVector(text) {
+
+    return semanticConcepts.map(concept =>
+        concept.some(term => containsSemanticTerm(text, term)) ? 1 : 0
+    );
+}
+
+
+function cosineSimilarity(vectorA, vectorB) {
+
+    const dotProduct = vectorA.reduce((sum, value, index) =>
+        sum + value * vectorB[index], 0
+    );
+
+    const magnitudeA = Math.sqrt(vectorA.reduce((sum, value) => sum + value * value, 0));
+    const magnitudeB = Math.sqrt(vectorB.reduce((sum, value) => sum + value * value, 0));
+
+    if (magnitudeA === 0 || magnitudeB === 0) {
+        return 0;
+    }
+
+    return dotProduct / (magnitudeA * magnitudeB);
+}
+
+
+function getSemanticSearchScore(file, query) {
+
+    const typeLabels = {
+        folder: "pasta diretório",
+        image: "foto imagem",
+        document: "documento texto",
+        pdf: "documento pdf"
+    };
+
+    const fileText = [
+        file.name,
+        file.tags.join(" "),
+        file.focus,
+        typeLabels[file.type] || file.type
+    ].join(" ");
+
+    const normalizedQuery = normalizeSemanticText(query);
+    const normalizedName = normalizeSemanticText(file.name);
+    const normalizedTags = normalizeSemanticText(file.tags.join(" "));
+    const queryTokens = normalizedQuery.split(" ").filter(Boolean);
+
+    let lexicalScore = 0;
+
+    if (containsSemanticTerm(file.name, normalizedQuery)) lexicalScore += 100;
+    if (containsSemanticTerm(file.tags.join(" "), normalizedQuery)) lexicalScore += 85;
+
+    if (normalizedQuery.length >= 3 && normalizedName.includes(normalizedQuery)) {
+        lexicalScore += 55;
+    }
+
+    if (normalizedQuery.length >= 3 && normalizedTags.includes(normalizedQuery)) {
+        lexicalScore += 45;
+    }
+
+    queryTokens.forEach(token => {
+        if (containsSemanticTerm(file.name, token)) lexicalScore += 25;
+        if (containsSemanticTerm(file.tags.join(" "), token)) lexicalScore += 20;
+    });
+
+    const semanticSimilarity = cosineSimilarity(
+        buildSemanticVector(query),
+        buildSemanticVector(fileText)
+    );
+
+    return lexicalScore + semanticSimilarity * 50;
+}
+
+
+function getRelatedSemanticTerms(query) {
+
+    const normalizedQuery = normalizeSemanticText(query);
+    const queryTokens = normalizedQuery.split(" ").filter(Boolean);
+    const relatedTerms = new Set();
+
+    semanticConcepts.forEach(concept => {
+        const belongsToConcept = concept.some(term => {
+            const normalizedTerm = normalizeSemanticText(term);
+            return normalizedTerm === normalizedQuery ||
+                queryTokens.includes(normalizedTerm) ||
+                (normalizedQuery.length >= 3 && normalizedTerm.startsWith(normalizedQuery));
+        });
+
+        if (!belongsToConcept) return;
+
+        concept.forEach(term => {
+            if (normalizeSemanticText(term) !== normalizedQuery) {
+                relatedTerms.add(term);
+            }
+        });
+    });
+
+    return [...relatedTerms].slice(0, 5);
+}
+
+
+function updateSemanticSearchFeedback(resultCount) {
+
+    const input = document.getElementById("semantic-search-input");
+    const feedback = document.getElementById("search-feedback");
+    const clearButton = document.getElementById("clear-search-button");
+    const query = input.value.trim();
+
+    clearButton.classList.toggle("hidden", !query);
+
+    if (!query) {
+        feedback.textContent =
+            "A busca também encontra conceitos relacionados. Ex.: “robótica” encontra ROS2 e programação.";
+        return;
+    }
+
+    const relatedTerms = getRelatedSemanticTerms(query);
+    const resultLabel = `${resultCount} ${resultCount === 1 ? "resultado" : "resultados"}`;
+
+    feedback.textContent = relatedTerms.length > 0 ?
+        `${resultLabel}. Buscando também por: ${relatedTerms.join(", ")}.` :
+        `${resultLabel}. Busca realizada em nomes e tags.`;
+}
+
+
+function handleSemanticSearch() {
+
+    renderCurrentView();
+}
+
+
+function handleSemanticSearchKeydown(event) {
+
+    if (event.key === "Escape") {
+        clearSemanticSearch();
+    }
+}
+
+
+function clearSemanticSearch() {
+
+    const input = document.getElementById("semantic-search-input");
+    input.value = "";
+    input.focus();
+    renderCurrentView();
+}
+
+
+/* =========================================================
    FILTROS COMPARTILHADOS ENTRE GRADE E GRAFO
    ========================================================= */
 
@@ -387,6 +583,11 @@ function getVisibleFiles() {
     const sort =
         document.getElementById("sort-select").value;
 
+    const searchQuery =
+        document.getElementById("semantic-search-input").value.trim();
+
+    const semanticScores = new Map();
+
 
     const visibleFiles = files.filter(file => {
 
@@ -398,12 +599,30 @@ function getVisibleFiles() {
             filter === "all" ||
             file.type === filter;
 
-        return focusMatch && typeMatch;
+        const semanticScore = searchQuery ?
+            getSemanticSearchScore(file, searchQuery) :
+            0;
+
+        semanticScores.set(file.id, semanticScore);
+
+        const searchMatch =
+            !searchQuery || semanticScore > 0;
+
+        return focusMatch && typeMatch && searchMatch;
 
     });
 
 
     return visibleFiles.sort((a, b) => {
+
+        if (searchQuery) {
+            const relevanceDifference =
+                semanticScores.get(b.id) - semanticScores.get(a.id);
+
+            if (relevanceDifference !== 0) {
+                return relevanceDifference;
+            }
+        }
 
         if (order === "first") {
             if (a.type === "folder" && b.type !== "folder") return -1;
@@ -451,6 +670,22 @@ function renderGrid() {
 
 
     grid.innerHTML = "";
+
+    updateSemanticSearchFeedback(visibleFiles.length);
+
+
+    if (visibleFiles.length === 0) {
+
+        const empty = document.createElement("div");
+        empty.className = "grid-empty";
+        empty.innerHTML = `
+            <span>🔎</span>
+            <strong>Nenhum arquivo encontrado</strong>
+            <p>Tente outro termo ou remova algum filtro.</p>
+        `;
+        grid.appendChild(empty);
+        return;
+    }
 
 
     visibleFiles.forEach(file => {
@@ -1021,6 +1256,8 @@ function renderGraph() {
     const connections = graphFiles.reduce((total, file) =>
         total + file.tags.filter(tag => graphTags.includes(tag)).length, 0
     );
+
+    updateSemanticSearchFeedback(graphFiles.length);
 
     document.getElementById("graph-info").textContent =
         `${graphFiles.length} ${graphFiles.length === 1 ? "arquivo" : "arquivos"} • ` +
