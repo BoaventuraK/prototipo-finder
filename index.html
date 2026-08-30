@@ -55,20 +55,20 @@
 
                 <div class="actions">
 
-                    <button class="icon-btn" onclick="toggleViewMode()" title="Alternar Lista/Grafo">
-                    🕸️ Grafo
+                    <button id="view-mode-button" class="icon-btn" onclick="toggleViewMode()" title="Alternar entre arquivos e grafo" aria-pressed="false">
+                    🕸️ Ver grafo
                 </button>
 
                     <button class="icon-btn" onclick="openTagManager()" title="Gerenciar tags">
                     🏷️ Tags
                 </button>
 
-                    <select id="folder-order-select" onchange="renderGrid()">
+                    <select id="folder-order-select" onchange="renderCurrentView()" aria-label="Posição das pastas">
                     <option value="first">Pastas primeiro</option>
                     <option value="last">Pastas por último</option>
                 </select>
 
-                    <select id="filter-select" onchange="renderGrid()">
+                    <select id="filter-select" onchange="renderCurrentView()" aria-label="Filtrar por tipo">
                     <option value="all">Todos os tipos</option>
                     <option value="folder">Pastas</option>
                     <option value="image">Imagens</option>
@@ -76,7 +76,7 @@
                     <option value="pdf">PDFs</option>
                 </select>
 
-                    <select id="sort-select" onchange="renderGrid()">
+                    <select id="sort-select" onchange="renderCurrentView()" aria-label="Ordenar arquivos">
                     <option value="name">Ordenar por Nome</option>
                     <option value="size">Ordenar por Tamanho</option>
                     <option value="date">Ordenar por Modificação</option>
@@ -97,16 +97,25 @@
 
                 <div class="graph-toolbar">
 
-                    <div>
+                    <div class="graph-heading">
                         <strong>Grafo de arquivos</strong>
                         <span id="graph-info">
                         Relacionamentos através de tags
                     </span>
                     </div>
 
-                    <button class="primary-btn" onclick="openTagManager()">
-                    🏷️ Adicionar tags
-                </button>
+                    <div class="graph-actions">
+                        <label class="graph-tag-filter" for="graph-tag-filter">
+                            <span>Filtrar por tag</span>
+                            <select id="graph-tag-filter" onchange="renderGraph()">
+                                <option value="all">Todas as tags</option>
+                            </select>
+                        </label>
+
+                        <button class="primary-btn" onclick="openTagManager()">
+                            🏷️ Adicionar tags
+                        </button>
+                    </div>
 
                 </div>
 

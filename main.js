@@ -291,6 +291,8 @@ let selectedTagFile = null;
 
 let graphMode = false;
 
+let graphResizeTimer = null;
+
 
 /* =========================================================
    INICIALIZAÇÃO
@@ -305,6 +307,18 @@ document.addEventListener("DOMContentLoaded", () => {
     updateAvailableTags();
 
     document.addEventListener("click", closeContextMenu);
+
+    window.addEventListener("resize", () => {
+
+        clearTimeout(graphResizeTimer);
+
+        graphResizeTimer = setTimeout(() => {
+            if (graphMode && !document.getElementById("graph-view").classList.contains("hidden")) {
+                renderGraph();
+            }
+        }, 120);
+
+    });
 
 });
 
@@ -325,19 +339,18 @@ function switchTab(tab, element) {
 
     document
         .getElementById("file-grid")
-        .classList.toggle("hidden", tab !== "files");
+        .classList.toggle("hidden", tab !== "files" || graphMode);
 
     document
         .getElementById("graph-view")
-        .classList.add("hidden");
+        .classList.toggle("hidden", tab !== "files" || !graphMode);
 
     document
         .getElementById("cleanup-view")
         .classList.toggle("hidden", tab !== "cleanup");
 
     if (tab === "files") {
-        graphMode = false;
-        document.getElementById("file-grid").classList.remove("hidden");
+        renderCurrentView();
     }
 }
 
@@ -355,17 +368,15 @@ function setFocus(focus) {
         "/home/ubuntu" :
         `/home/ubuntu/${focus}`;
 
-    renderGrid();
+    renderCurrentView();
 }
 
 
 /* =========================================================
-   RENDER GRID
+   FILTROS COMPARTILHADOS ENTRE GRADE E GRAFO
    ========================================================= */
 
-function renderGrid() {
-
-    const grid = document.getElementById("file-grid");
+function getVisibleFiles() {
 
     const filter =
         document.getElementById("filter-select").value;
@@ -377,7 +388,7 @@ function renderGrid() {
         document.getElementById("sort-select").value;
 
 
-    let visibleFiles = files.filter(file => {
+    const visibleFiles = files.filter(file => {
 
         const focusMatch =
             currentFocus === "all" ||
@@ -392,27 +403,16 @@ function renderGrid() {
     });
 
 
-    visibleFiles.sort((a, b) => {
+    return visibleFiles.sort((a, b) => {
 
         if (order === "first") {
-
             if (a.type === "folder" && b.type !== "folder") return -1;
-
             if (a.type !== "folder" && b.type === "folder") return 1;
-
         }
 
         if (order === "last") {
-
             if (a.type === "folder" && b.type !== "folder") return 1;
-
             if (a.type !== "folder" && b.type === "folder") return -1;
-
-        }
-
-
-        if (sort === "name") {
-            return a.name.localeCompare(b.name);
         }
 
         if (sort === "size") {
@@ -423,7 +423,31 @@ function renderGrid() {
             return new Date(b.date) - new Date(a.date);
         }
 
+        return a.name.localeCompare(b.name, "pt-BR");
+
     });
+}
+
+
+function renderCurrentView() {
+
+    if (graphMode) {
+        renderGraph();
+        return;
+    }
+
+    renderGrid();
+}
+
+
+/* =========================================================
+   RENDER GRID
+   ========================================================= */
+
+function renderGrid() {
+
+    const grid = document.getElementById("file-grid");
+    const visibleFiles = getVisibleFiles();
 
 
     grid.innerHTML = "";
@@ -911,7 +935,9 @@ function saveTags() {
 
     renderGrid();
 
-    renderGraph();
+    if (graphMode) {
+        renderGraph();
+    }
 
     closeModals();
 
@@ -933,12 +959,19 @@ function toggleViewMode() {
     const graph =
         document.getElementById("graph-view");
 
+    const button =
+        document.getElementById("view-mode-button");
+
 
     if (graphMode) {
 
         grid.classList.add("hidden");
 
         graph.classList.remove("hidden");
+
+        button.innerHTML = "🗂️ Ver arquivos";
+
+        button.setAttribute("aria-pressed", "true");
 
         renderGraph();
 
@@ -947,6 +980,10 @@ function toggleViewMode() {
         graph.classList.add("hidden");
 
         grid.classList.remove("hidden");
+
+        button.innerHTML = "🕸️ Ver grafo";
+
+        button.setAttribute("aria-pressed", "false");
 
     }
 
@@ -964,288 +1001,250 @@ function renderGraph() {
 
     container.innerHTML = "";
 
-
-    const width =
-        container.clientWidth;
-
-    const height =
-        container.clientHeight;
-
-
-    if (width === 0 || height === 0) {
+    if (container.clientWidth === 0 || container.clientHeight === 0) {
         return;
     }
 
-
-    /*
-        O grafo possui dois tipos de nós:
-
-        1. TAG
-        2. ARQUIVO
-
-        Se dois arquivos possuem a mesma tag,
-        os dois ficam ligados ao mesmo nó.
-
-        Exemplo:
-
-        [programação]
-          /        \
-       robot.py   dados.pdf
-
-        Isso é diferente de simplesmente
-        agrupar os arquivos.
-    */
-
-
-    const allTags = getAllTags();
-
-
-    /* SVG PARA AS LINHAS */
-
-    const svg =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "svg"
-        );
-
-    svg.classList.add("graph-svg");
-
-    svg.setAttribute("width", width);
-
-    svg.setAttribute("height", height);
-
-    container.appendChild(svg);
-
-
-    const nodes = [];
-
-    const positions = new Map();
-
-
-    /* =====================================================
-       POSIÇÃO DAS TAGS
-       ===================================================== */
-
-    allTags.forEach((tag, index) => {
-
-        const angle =
-            (Math.PI * 2 * index) /
-            Math.max(allTags.length, 1);
-
-        const radius =
-            Math.min(width, height) * 0.28;
-
-
-        const x =
-            width / 2 +
-            Math.cos(angle) * radius;
-
-        const y =
-            height / 2 +
-            Math.sin(angle) * radius;
-
-
-        positions.set(
-            "tag:" + tag, { x, y }
-        );
-
-
-        nodes.push({
-            type: "tag",
-            name: tag,
-            x,
-            y
-        });
-
-    });
-
-
-    /* =====================================================
-       POSIÇÃO DOS ARQUIVOS
-       ===================================================== */
-
-    files
-        .filter(file => file.tags.length > 0)
-        .forEach((file, index) => {
-
-            const angle =
-                (Math.PI * 2 * index) /
-                Math.max(files.length, 1);
-
-            const radius =
-                Math.min(width, height) * 0.42;
-
-
-            const x =
-                width / 2 +
-                Math.cos(angle) * radius;
-
-            const y =
-                height / 2 +
-                Math.sin(angle) * radius;
-
-
-            positions.set(
-                "file:" + file.id, { x, y }
-            );
-
-
-            nodes.push({
-                type: "file",
-                file,
-                x,
-                y
-            });
-
-        });
-
-
-    /* =====================================================
-       LINHAS
-       ===================================================== */
-
-    files
-        .filter(file => file.tags.length > 0)
-        .forEach(file => {
-
-            const filePosition =
-                positions.get("file:" + file.id);
-
-
-            file.tags.forEach(tag => {
-
-                const tagPosition =
-                    positions.get("tag:" + tag);
-
-                if (!tagPosition) return;
-
-
-                const line =
-                    document.createElementNS(
-                        "http://www.w3.org/2000/svg",
-                        "line"
-                    );
-
-
-                line.setAttribute(
-                    "x1",
-                    filePosition.x
-                );
-
-                line.setAttribute(
-                    "y1",
-                    filePosition.y
-                );
-
-                line.setAttribute(
-                    "x2",
-                    tagPosition.x
-                );
-
-                line.setAttribute(
-                    "y2",
-                    tagPosition.y
-                );
-
-
-                line.classList.add("graph-line");
-
-                svg.appendChild(line);
-
-            });
-
-        });
-
-
-    /* =====================================================
-       NÓS
-       ===================================================== */
-
-    nodes.forEach(node => {
-
-        const element =
-            document.createElement("div");
-
-
-        element.classList.add("graph-node");
-
-
-        if (node.type === "tag") {
-
-            element.classList.add("tag-node");
-
-            element.innerHTML = `
-
-                <div class="node-icon">
-                    🏷️
-                </div>
-
-                <div class="node-name">
-                    #${node.name}
-                </div>
-
-            `;
-
-        } else {
-
-            element.innerHTML = `
-
-                <div class="node-icon">
-                    ${node.file.icon}
-                </div>
-
-                <div class="node-name">
-                    ${node.file.name}
-                </div>
-
-            `;
-
-        }
-
-
-        element.style.left =
-            `${node.x}px`;
-
-        element.style.top =
-            `${node.y}px`;
-
-
-        if (node.type === "file") {
-
-            element.onclick = () => {
-
-                openTagManager(node.file.id);
-
-            };
-
-        }
-
-
-        container.appendChild(element);
-
-    });
-
+    const contextFiles = getVisibleFiles();
+    const selectedTag = updateGraphTagOptions(contextFiles);
+    const graphFiles = contextFiles.filter(file =>
+        file.tags.length > 0 &&
+        (selectedTag === "all" || file.tags.includes(selectedTag))
+    );
+
+    const graphTags = selectedTag === "all" ?
+        [...new Set(graphFiles.flatMap(file => file.tags))].sort((a, b) =>
+            a.localeCompare(b, "pt-BR")
+        ) :
+        [selectedTag];
+
+    const connections = graphFiles.reduce((total, file) =>
+        total + file.tags.filter(tag => graphTags.includes(tag)).length, 0
+    );
 
     document.getElementById("graph-info").textContent =
-        `${nodes.length} nós • ${countConnections()} conexões`;
+        `${graphFiles.length} ${graphFiles.length === 1 ? "arquivo" : "arquivos"} • ` +
+        `${graphTags.length} ${graphTags.length === 1 ? "tag" : "tags"} • ` +
+        `${connections} ${connections === 1 ? "conexão" : "conexões"}`;
+
+    if (graphFiles.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "graph-empty";
+        empty.innerHTML = `
+            <span>🔎</span>
+            <strong>Nenhum arquivo encontrado</strong>
+            <p>Ajuste o foco, o tipo de arquivo ou a tag selecionada.</p>
+        `;
+        container.appendChild(empty);
+        return;
+    }
+
+    const width = Math.max(container.clientWidth, 720);
+    const rowHeight = 72;
+    const height = Math.max(
+        container.clientHeight,
+        Math.max(graphTags.length, graphFiles.length) * rowHeight + 100
+    );
+    const tagX = 125;
+    const fileX = width - 145;
+    const tagPositions = getGraphColumnPositions(graphTags, tagX, height);
+    const filePositions = getGraphColumnPositions(graphFiles, fileX, height);
+
+    const canvas = document.createElement("div");
+    canvas.className = "graph-canvas";
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.classList.add("graph-svg");
+    svg.setAttribute("width", width);
+    svg.setAttribute("height", height);
+    svg.setAttribute("aria-hidden", "true");
+    canvas.appendChild(svg);
+
+    graphFiles.forEach(file => {
+        const filePosition = filePositions.get(file);
+
+        file.tags
+            .filter(tag => tagPositions.has(tag))
+            .forEach(tag => {
+                const tagPosition = tagPositions.get(tag);
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                const middleX = (tagPosition.x + filePosition.x) / 2;
+
+                path.setAttribute(
+                    "d",
+                    `M ${tagPosition.x + 72} ${tagPosition.y} ` +
+                    `C ${middleX} ${tagPosition.y}, ${middleX} ${filePosition.y}, ` +
+                    `${filePosition.x - 92} ${filePosition.y}`
+                );
+                path.classList.add("graph-line");
+                path.dataset.tag = tag;
+                path.dataset.fileId = file.id;
+                svg.appendChild(path);
+            });
+    });
+
+    graphTags.forEach(tag => {
+        const position = tagPositions.get(tag);
+        const element = createGraphNode("tag", tag, position);
+
+        element.title = `Mostrar somente arquivos com a tag #${tag}`;
+        element.addEventListener("click", () => {
+            document.getElementById("graph-tag-filter").value = tag;
+            renderGraph();
+        });
+        addGraphHighlightEvents(element, "tag", tag, canvas, graphFiles, graphTags);
+        canvas.appendChild(element);
+    });
+
+    graphFiles.forEach(file => {
+        const position = filePositions.get(file);
+        const element = createGraphNode("file", file, position);
+
+        element.title = `${file.name} — clique para gerenciar tags`;
+        element.addEventListener("click", () => openTagManager(file.id));
+        addGraphHighlightEvents(element, "file", String(file.id), canvas, graphFiles, graphTags);
+        canvas.appendChild(element);
+    });
+
+    const legend = document.createElement("div");
+    legend.className = "graph-legend";
+    legend.innerHTML = `
+        <span><i class="legend-tag"></i> Tags</span>
+        <span><i class="legend-file"></i> Arquivos e pastas</span>
+        <small>Passe o mouse sobre um item para destacar suas relações</small>
+    `;
+    canvas.appendChild(legend);
+    container.appendChild(canvas);
 }
 
 
 /* =========================================================
-   CONTAR CONEXÕES
+   APOIO AO GRAFO
    ========================================================= */
 
-function countConnections() {
+function updateGraphTagOptions(contextFiles) {
 
-    let count = 0;
+    const select = document.getElementById("graph-tag-filter");
+    const previousValue = select.value || "all";
+    const tags = [...new Set(contextFiles.flatMap(file => file.tags))]
+        .sort((a, b) => a.localeCompare(b, "pt-BR"));
 
-    files.forEach(file => {
+    select.innerHTML = "";
 
-        count += file.tags.length;
+    const allOption = document.createElement("option");
+    allOption.value = "all";
+    allOption.textContent = "Todas as tags";
+    select.appendChild(allOption);
 
+    tags.forEach(tag => {
+        const option = document.createElement("option");
+        option.value = tag;
+        option.textContent = `#${tag}`;
+        select.appendChild(option);
     });
 
-    return count;
+    select.value = tags.includes(previousValue) ? previousValue : "all";
+    return select.value;
+}
+
+
+function getGraphColumnPositions(items, x, height) {
+
+    const positions = new Map();
+    const top = 78;
+    const bottom = height - 42;
+    const gap = items.length > 1 ? (bottom - top) / (items.length - 1) : 0;
+
+    items.forEach((item, index) => {
+        positions.set(item, {
+            x,
+            y: items.length === 1 ? height / 2 : top + index * gap
+        });
+    });
+
+    return positions;
+}
+
+
+function createGraphNode(type, value, position) {
+
+    const element = document.createElement("button");
+    element.type = "button";
+    element.className = `graph-node ${type === "tag" ? "tag-node" : "file-node"}`;
+    element.dataset.kind = type;
+    element.dataset.value = type === "tag" ? value : value.id;
+    element.style.left = `${position.x}px`;
+    element.style.top = `${position.y}px`;
+
+    const icon = document.createElement("span");
+    icon.className = "node-icon";
+    icon.textContent = type === "tag" ? "#" : value.icon;
+
+    const content = document.createElement("span");
+    content.className = "node-content";
+
+    const name = document.createElement("span");
+    name.className = "node-name";
+    name.textContent = type === "tag" ? value : value.name;
+    content.appendChild(name);
+
+    if (type === "file") {
+        const meta = document.createElement("span");
+        meta.className = "node-meta";
+        meta.textContent = `${formatSize(value.size)} • ${value.tags.length} ` +
+            `${value.tags.length === 1 ? "tag" : "tags"}`;
+        content.appendChild(meta);
+    }
+
+    element.append(icon, content);
+    return element;
+}
+
+
+function addGraphHighlightEvents(element, kind, value, canvas, graphFiles, graphTags) {
+
+    element.addEventListener("mouseenter", () => {
+        const relatedFiles = new Set();
+        const relatedTags = new Set();
+
+        if (kind === "tag") {
+            relatedTags.add(value);
+            graphFiles
+                .filter(file => file.tags.includes(value))
+                .forEach(file => relatedFiles.add(String(file.id)));
+        } else {
+            relatedFiles.add(value);
+            const file = graphFiles.find(item => String(item.id) === value);
+            if (!file) return;
+            file.tags
+                .filter(tag => graphTags.includes(tag))
+                .forEach(tag => relatedTags.add(tag));
+        }
+
+        canvas.querySelectorAll(".graph-node").forEach(node => {
+            const related = node.dataset.kind === "tag" ?
+                relatedTags.has(node.dataset.value) :
+                relatedFiles.has(node.dataset.value);
+            node.classList.toggle("is-dimmed", !related);
+            node.classList.toggle("is-highlighted", related);
+        });
+
+        canvas.querySelectorAll(".graph-line").forEach(line => {
+            const related = kind === "tag" ?
+                line.dataset.tag === value :
+                line.dataset.fileId === value;
+            line.classList.toggle("is-dimmed", !related);
+            line.classList.toggle("highlight", related);
+        });
+    });
+
+    element.addEventListener("mouseleave", () => {
+        canvas.querySelectorAll(".graph-node, .graph-line").forEach(item => {
+            item.classList.remove("is-dimmed", "is-highlighted", "highlight");
+        });
+    });
 }
 
 
@@ -1365,7 +1364,9 @@ function deleteFile(id) {
 
     renderCleanup();
 
-    renderGraph();
+    if (graphMode) {
+        renderGraph();
+    }
 
 }
 
