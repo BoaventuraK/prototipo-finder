@@ -1,1431 +1,414 @@
-/* =========================================================
-   UBUNTU FILES - PROTÓTIPO
-   ========================================================= */
-
-
-/* =========================================================
-   DADOS DOS ARQUIVOS
-   ========================================================= */
-
 let files = [
+    // PASTAS RAIZ
+    { id: 1, parentId: null, name: "Matérias da Faculdade", type: "folder", icon: "📁", color: "transparent", focus: "faculdade", tags: ["universidade", "estudos"] },
+    { id: 2, parentId: null, name: "Projetos da Empresa", type: "folder", icon: "📁", color: "transparent", focus: "trabalho", tags: ["trabalho", "dev"] },
+    { id: 3, parentId: null, name: "Projetos Pessoais", type: "folder", icon: "📁", color: "transparent", focus: "pessoal", tags: ["side-project", "codigo"] },
+    { id: 4, parentId: null, name: "Cursos e Certificados", type: "folder", icon: "📁", color: "transparent", focus: "pessoal", tags: ["educacao"] },
+    
+    // ARQUIVOS NA RAIZ
+    { id: 10, parentId: null, name: "Curriculo_Atualizado.pdf", type: "pdf", icon: "📄", size: 120, date: "2026-01-15", focus: "pessoal", tags: ["carreira", "curriculo"], lastOpened: "2026-09-10" },
+    { id: 11, parentId: null, name: "Foto_Paisagem_Viagem.jpg", type: "image", icon: "🖼️", size: 4500, date: "2025-08-21", focus: "pessoal", tags: ["viagem", "fotos"], lastOpened: "2026-02-14" },
 
-    {
-        id: 1,
-        name: "Faculdade",
-        type: "folder",
-        icon: "🎓",
-        size: 0,
-        date: "2026-08-29",
-        focus: "faculdade",
-        tags: ["faculdade", "uneb", "estudos"]
-    },
+    // DENTRO DE Faculdade (ID: 1)
+    { id: 101, parentId: 1, name: "Trabalho_Redes_Computadores.pdf", type: "pdf", icon: "📄", size: 1500, date: "2025-12-10", focus: "faculdade", tags: ["projeto", "redes"], lastOpened: "2025-12-11", unused: true },
+    { id: 102, parentId: 1, name: "TCC_Rascunho.pdf", type: "pdf", icon: "📄", size: 2100, date: "2026-08-28", focus: "faculdade", tags: ["tcc", "pesquisa"], lastOpened: "2026-09-01" },
 
-    {
-        id: 2,
-        name: "Projetos",
-        type: "folder",
-        icon: "📁",
-        size: 0,
-        date: "2026-08-28",
-        focus: "trabalho",
-        tags: ["projetos", "programação"]
-    },
+    // DENTRO DE Trabalho (ID: 2)
+    { id: 201, parentId: 2, name: "script_automacao.py", type: "document", icon: "📝", size: 15, date: "2026-01-20", focus: "trabalho", tags: ["python", "automacao"], lastOpened: "2026-09-18" },
+    { id: 202, parentId: 2, name: "config_servidor.yaml", type: "document", icon: "📝", size: 8, date: "2026-02-10", focus: "trabalho", tags: ["infra", "config"], lastOpened: "2026-09-19" },
+    { id: 203, parentId: 2, name: "Planilha_Custos_Anuais.pdf", type: "pdf", icon: "📄", size: 900, date: "2026-02-25", focus: "trabalho", tags: ["financeiro", "relatorio"], lastOpened: "2026-03-01" },
 
-    {
-        id: 3,
-        name: "Fotos",
-        type: "folder",
-        icon: "🖼️",
-        size: 0,
-        date: "2026-08-20",
-        focus: "pessoal",
-        tags: ["fotos", "pessoal"]
-    },
+    // DENTRO DE Projetos Pessoais (ID: 3)
+    { id: 301, parentId: 3, name: "banco_dados.sql", type: "document", icon: "📝", size: 45, date: "2026-01-05", focus: "pessoal", tags: ["database", "sql"], lastOpened: "2026-09-15" },
+    { id: 302, parentId: 3, name: "api_backend.ts", type: "document", icon: "📝", size: 112, date: "2026-01-10", focus: "pessoal", tags: ["typescript"], lastOpened: "2026-09-15" },
+    { id: 303, parentId: 3, name: "api_backend_OLD.ts", type: "document", icon: "📝", size: 112, date: "2026-01-09", focus: "pessoal", tags: ["backup"], lastOpened: "2026-01-09", duplicateOf: 302 },
 
-    {
-        id: 4,
-        name: "Documentos",
-        type: "folder",
-        icon: "📂",
-        size: 0,
-        date: "2026-08-21",
-        focus: "all",
-        tags: ["documentos"]
-    },
-
-    {
-        id: 5,
-        name: "Trabalho",
-        type: "folder",
-        icon: "💼",
-        size: 0,
-        date: "2026-08-25",
-        focus: "trabalho",
-        tags: ["trabalho", "projetos"]
-    },
-
-    {
-        id: 6,
-        name: "Downloads",
-        type: "folder",
-        icon: "📥",
-        size: 0,
-        date: "2026-08-30",
-        focus: "all",
-        tags: ["downloads"]
-    },
-
-
-    {
-        id: 10,
-        name: "Trabalho_Final.pdf",
-        type: "pdf",
-        icon: "📕",
-        size: 24500,
-        date: "2026-08-28",
-        focus: "faculdade",
-        tags: ["faculdade", "uneb", "trabalho"]
-    },
-
-    {
-        id: 11,
-        name: "Banco_de_Dados.pdf",
-        type: "pdf",
-        icon: "📕",
-        size: 18300,
-        date: "2026-08-26",
-        focus: "faculdade",
-        tags: ["faculdade", "database", "estudos"]
-    },
-
-    {
-        id: 12,
-        name: "Redes_de_Computadores.pdf",
-        type: "pdf",
-        icon: "📕",
-        size: 32100,
-        date: "2026-08-24",
-        focus: "faculdade",
-        tags: ["faculdade", "redes", "estudos"]
-    },
-
-    {
-        id: 13,
-        name: "Projeto_Robotica.pdf",
-        type: "pdf",
-        icon: "📕",
-        size: 45200,
-        date: "2026-08-22",
-        focus: "trabalho",
-        tags: ["robotica", "ros2", "programação"]
-    },
-
-    {
-        id: 14,
-        name: "Curriculo.pdf",
-        type: "pdf",
-        icon: "📕",
-        size: 5300,
-        date: "2026-07-15",
-        focus: "pessoal",
-        tags: ["curriculo", "trabalho"]
-    },
-
-
-    {
-        id: 20,
-        name: "Foto_Formatura.jpg",
-        type: "image",
-        icon: "🖼️",
-        size: 4200,
-        date: "2026-08-20",
-        focus: "pessoal",
-        tags: ["fotos", "faculdade", "uneb"]
-    },
-
-    {
-        id: 21,
-        name: "Evento_UNEB.jpg",
-        type: "image",
-        icon: "🖼️",
-        size: 5100,
-        date: "2026-08-18",
-        focus: "faculdade",
-        tags: ["fotos", "uneb", "faculdade"]
-    },
-
-    {
-        id: 22,
-        name: "Robotica.jpg",
-        type: "image",
-        icon: "🖼️",
-        size: 8200,
-        date: "2026-08-17",
-        focus: "trabalho",
-        tags: ["robotica", "fotos", "projetos"]
-    },
-
-    {
-        id: 23,
-        name: "Equipe.jpg",
-        type: "image",
-        icon: "🖼️",
-        size: 7200,
-        date: "2026-08-15",
-        focus: "trabalho",
-        tags: ["equipe", "projetos", "fotos"]
-    },
-
-    {
-        id: 24,
-        name: "Viagem.jpg",
-        type: "image",
-        icon: "🖼️",
-        size: 9300,
-        date: "2026-07-20",
-        focus: "pessoal",
-        tags: ["fotos", "viagem", "pessoal"]
-    },
-
-    {
-        id: 25,
-        name: "Praia.jpg",
-        type: "image",
-        icon: "🖼️",
-        size: 11200,
-        date: "2026-07-18",
-        focus: "pessoal",
-        tags: ["fotos", "viagem", "pessoal"]
-    },
-
-
-    {
-        id: 30,
-        name: "algoritmos.pdf",
-        type: "pdf",
-        icon: "📕",
-        size: 18200,
-        date: "2026-08-12",
-        focus: "faculdade",
-        tags: ["faculdade", "programação", "estudos"]
-    },
-
-    {
-        id: 31,
-        name: "estrutura_dados.pdf",
-        type: "pdf",
-        icon: "📕",
-        size: 27600,
-        date: "2026-08-10",
-        focus: "faculdade",
-        tags: ["faculdade", "programação", "estudos"]
-    },
-
-    // {
-    //     id: 32,
-    //     name: "apresentacao.pptx",
-    //     type: "document",
-    //     icon: "📊",
-    //     size: 8900,
-    //     date: "2026-08-08",
-    //     focus: "faculdade",
-    //     tags: ["faculdade", "apresentação"]
-    // },
-
-    // {
-    //     id: 33,
-    //     name: "relatorio.docx",
-    //     type: "document",
-    //     icon: "📄",
-    //     size: 4300,
-    //     date: "2026-08-05",
-    //     focus: "trabalho",
-    //     tags: ["trabalho", "relatorio", "projetos"]
-    // },
-
-    // {
-    //     id: 34,
-    //     name: "anotacoes.txt",
-    //     type: "document",
-    //     icon: "📝",
-    //     size: 120,
-    //     date: "2026-07-30",
-    //     focus: "faculdade",
-    //     tags: ["faculdade", "estudos"]
-    // },
-
-    // {
-    //     id: 35,
-    //     name: "codigo_robot.py",
-    //     type: "document",
-    //     icon: "🐍",
-    //     size: 15,
-    //     date: "2026-08-29",
-    //     focus: "trabalho",
-    //     tags: ["programação", "robotica", "python", "ros2"]
-    // },
-
-    // {
-    //     id: 36,
-    //     name: "navigation.yaml",
-    //     type: "document",
-    //     icon: "⚙️",
-    //     size: 8,
-    //     date: "2026-08-29",
-    //     focus: "trabalho",
-    //     tags: ["ros2", "robotica", "programação"]
-    // }
-
+    // DENTRO DE Cursos (ID: 4)
+    { id: 401, parentId: 4, name: "Apostila_Ingles_Basico.pdf", type: "pdf", icon: "📄", size: 300, date: "2026-02-01", focus: "pessoal", tags: ["idiomas", "ingles"], lastOpened: "2026-08-20" },
+    { id: 402, parentId: 4, name: "Certificado_Design_UX.pdf", type: "pdf", icon: "📄", size: 2400, date: "2026-02-15", focus: "pessoal", tags: ["design", "certificado"], lastOpened: "2026-09-05" }
 ];
 
+let currentFocus = 'all';
+let currentView = 'grid';
+let network = null;
+let contextTargetId = null;
 
-/* =========================================================
-   VARIÁVEIS
-   ========================================================= */
-
-let currentFocus = "all";
-
-let currentFileForAction = null;
-
-let selectedTagFile = null;
-
-let graphMode = false;
-
-let graphResizeTimer = null;
-
-
-/* =========================================================
-   INICIALIZAÇÃO
-   ========================================================= */
+// NAVEGAÇÃO DE PASTAS
+let currentFolderId = null;
+let pathHistory = [];
 
 document.addEventListener("DOMContentLoaded", () => {
-
-    renderGrid();
-
-    renderCleanup();
-
-    updateAvailableTags();
-
-    document.addEventListener("click", closeContextMenu);
-
-    window.addEventListener("resize", () => {
-
-        clearTimeout(graphResizeTimer);
-
-        graphResizeTimer = setTimeout(() => {
-            if (graphMode && !document.getElementById("graph-view").classList.contains("hidden")) {
-                renderGraph();
-            }
-        }, 120);
-
-    });
-
+    updateBreadcrumb();
+    applyFilters();
+    document.addEventListener("click", () => closeContextMenu());
 });
 
-
-/* =========================================================
-   TROCA DE ABA
-   ========================================================= */
-
-function switchTab(tab, element) {
-
-    document
-        .querySelectorAll("#sidebar-menu li")
-        .forEach(li => li.classList.remove("active"));
-
-    if (element) {
-        element.classList.add("active");
-    }
-
-    document
-        .getElementById("file-grid")
-        .classList.toggle("hidden", tab !== "files" || graphMode);
-
-    document
-        .getElementById("graph-view")
-        .classList.toggle("hidden", tab !== "files" || !graphMode);
-
-    document
-        .getElementById("cleanup-view")
-        .classList.toggle("hidden", tab !== "cleanup");
-
-    if (tab === "files") {
-        renderCurrentView();
-    }
+/* ================= NAVEGAÇÃO DE PASTAS ================= */
+function openFolder(folderId) {
+    const folder = files.find(f => f.id === folderId);
+    if (!folder) return;
+    
+    pathHistory.push(folder);
+    currentFolderId = folderId;
+    updateBreadcrumb();
+    applyFilters();
 }
 
-
-/* =========================================================
-   FOCO
-   ========================================================= */
-
-function setFocus(focus) {
-
-    currentFocus = focus;
-
-    document.getElementById("current-path").textContent =
-        focus === "all" ?
-        "/home/ubuntu" :
-        `/home/ubuntu/${focus}`;
-
-    renderCurrentView();
+function navigateUp() {
+    if (pathHistory.length === 0) return;
+    pathHistory.pop();
+    currentFolderId = pathHistory.length > 0 ? pathHistory[pathHistory.length - 1].id : null;
+    updateBreadcrumb();
+    applyFilters();
 }
 
+function navigateToRoot() {
+    pathHistory = [];
+    currentFolderId = null;
+    updateBreadcrumb();
+    applyFilters();
+}
 
-/* =========================================================
-   FILTROS COMPARTILHADOS ENTRE GRADE E GRAFO
-   ========================================================= */
+function updateBreadcrumb() {
+    const bc = document.getElementById('breadcrumb');
+    let html = '';
+    
+    if (pathHistory.length > 0) {
+        html += `<button class="breadcrumb-btn" onclick="navigateUp()">Voltar</button>`;
+    }
+    
+    const rootNames = { 'all': 'Todos', 'faculdade': 'Faculdade', 'trabalho': 'Trabalho', 'pessoal': 'Pessoal' };
+    html += `<span class="breadcrumb-path" style="cursor:pointer" onclick="navigateToRoot()">/home/${rootNames[currentFocus]}</span>`;
+    
+    pathHistory.forEach((folder) => {
+        html += ` / ${folder.name}`;
+    });
+    
+    bc.innerHTML = html;
+}
 
-function getVisibleFiles() {
+/* ================= NAVEGAÇÃO E MODOS DE FOCO ================= */
+function setView(view, element) {
+    currentView = view;
+    if(element) {
+        document.querySelectorAll('#main-nav li').forEach(li => li.classList.remove('active'));
+        element.classList.add('active');
+    }
+    
+    document.getElementById('grid-container').classList.toggle('hidden', view !== 'grid');
+    document.getElementById('graph-container').classList.toggle('hidden', view !== 'graph');
+    document.getElementById('cleanup-container').classList.toggle('hidden', view !== 'cleanup');
+    
+    if (view === 'grid') applyFilters();
+    if (view === 'graph') initGraph();
+    if (view === 'cleanup') renderCleanupView();
+}
 
-    const filter =
-        document.getElementById("filter-select").value;
+function setFocusMode(mode, element) {
+    currentFocus = mode;
+    document.querySelectorAll('#focus-nav li').forEach(li => li.classList.remove('active-focus'));
+    element.classList.add('active-focus');
+    
+    navigateToRoot(); 
+}
 
-    const order =
-        document.getElementById("folder-order-select").value;
+/* ================= FILTROS E PESQUISA ================= */
+function applyFilters() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const typeTerm = document.getElementById('typeFilter').value;
 
-    const sort =
-        document.getElementById("sort-select").value;
-
-
-    const visibleFiles = files.filter(file => {
-
-        const focusMatch =
-            currentFocus === "all" ||
-            file.focus === currentFocus;
-
-        const typeMatch =
-            filter === "all" ||
-            file.type === filter;
-
-        return focusMatch && typeMatch;
-
+    const filtered = files.filter(f => {
+        const matchFocus = currentFocus === 'all' || f.focus === currentFocus;
+        const matchSearch = f.name.toLowerCase().includes(searchTerm);
+        const matchType = typeTerm === 'all' || f.type === typeTerm;
+        
+        const matchFolder = searchTerm !== '' ? true : f.parentId === currentFolderId;
+        
+        return matchFocus && matchSearch && matchType && matchFolder;
     });
 
-
-    return visibleFiles.sort((a, b) => {
-
-        if (order === "first") {
-            if (a.type === "folder" && b.type !== "folder") return -1;
-            if (a.type !== "folder" && b.type === "folder") return 1;
-        }
-
-        if (order === "last") {
-            if (a.type === "folder" && b.type !== "folder") return 1;
-            if (a.type !== "folder" && b.type === "folder") return -1;
-        }
-
-        if (sort === "size") {
-            return b.size - a.size;
-        }
-
-        if (sort === "date") {
-            return new Date(b.date) - new Date(a.date);
-        }
-
-        return a.name.localeCompare(b.name, "pt-BR");
-
-    });
+    if (currentView === 'grid') renderGrid(filtered);
+    if (currentView === 'graph') initGraph(filtered); 
 }
 
+/* ================= GRID RENDER ================= */
+function renderGrid(data) {
+    const grid = document.getElementById('grid-container');
+    grid.innerHTML = '';
 
-function renderCurrentView() {
-
-    if (graphMode) {
-        renderGraph();
+    if(data.length === 0) {
+        grid.innerHTML = '<div style="color:var(--text-muted); grid-column: 1 / -1;">Pasta vazia ou nenhum arquivo encontrado.</div>';
         return;
     }
 
-    renderGrid();
-}
-
-
-/* =========================================================
-   RENDER GRID
-   ========================================================= */
-
-function renderGrid() {
-
-    const grid = document.getElementById("file-grid");
-    const visibleFiles = getVisibleFiles();
-
-
-    grid.innerHTML = "";
-
-
-    visibleFiles.forEach(file => {
-
-        const item = document.createElement("div");
-
-        item.className = "item";
-
-        item.dataset.id = file.id;
-
-
-        let iconHtml;
-
-        if (file.type === "folder") {
-
-            iconHtml = `
-                <div
-                    class="custom-folder"
-                    style="background:${getFolderColor(file)}">
-                    ${file.icon}
-                </div>
-            `;
-
-        } else {
-
-            iconHtml = `
-                <div class="icon">
-                    ${file.icon}
-                </div>
-            `;
-
+    data.forEach(file => {
+        const div = document.createElement('div');
+        div.className = 'file-item';
+        
+        let iconStyle = '';
+        if (file.type === 'folder' && file.color && file.color !== 'transparent') {
+            iconStyle = `background-color: ${file.color}; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);`;
         }
 
-
-        const tagsHtml = file.tags
-            .map(tag => `<span class="item-tag">#${tag}</span>`)
-            .join("");
-
-
-        item.innerHTML = `
-
-            ${iconHtml}
-
-            <div class="name">
-                ${file.name}
-            </div>
-
-            <div class="metadata">
-                ${formatSize(file.size)}
-            </div>
-
-            <div class="item-tags">
-                ${tagsHtml}
-            </div>
-
-            <button
-                class="item-options"
-                onclick="event.stopPropagation(); openContextMenu(event, ${file.id})">
-                ⋮
-            </button>
-
+        div.innerHTML = `
+            <div class="file-icon" style="${iconStyle}">${file.icon}</div>
+            <div class="file-name">${file.name}</div>
         `;
-
-
-        item.addEventListener("dblclick", () => {
-
-            if (file.type === "folder") {
-
-                document.getElementById("current-path")
-                    .textContent += "/" + file.name;
-
+        
+        div.onclick = () => {
+            if (file.type === 'folder') {
+                openFolder(file.id);
             } else {
-
-                alert(`Abrindo: ${file.name}`);
-
+                openInspector(file);
             }
-
-        });
-
-
-        item.addEventListener("contextmenu", event => {
-
-            event.preventDefault();
-
-            openContextMenu(event, file.id);
-
-        });
-
-
-        grid.appendChild(item);
-
-    });
-
-}
-
-
-/* =========================================================
-   TAMANHO
-   ========================================================= */
-
-function formatSize(size) {
-
-    if (size === 0) {
-        return "Pasta";
-    }
-
-    if (size < 1000) {
-        return `${size} KB`;
-    }
-
-    return `${(size / 1000).toFixed(1)} MB`;
-}
-
-
-/* =========================================================
-   COR DAS PASTAS
-   ========================================================= */
-
-function getFolderColor(file) {
-
-    if (file.color) {
-        return file.color;
-    }
-
-    return "#e8a317";
-}
-
-
-/* =========================================================
-   CONTEXT MENU
-   ========================================================= */
-
-function openContextMenu(event, id) {
-
-    event.stopPropagation();
-
-    const file = files.find(f => f.id === id);
-
-    if (!file) return;
-
-    currentFileForAction = id;
-
-    const menu =
-        document.getElementById("context-menu");
-
-    const options =
-        document.getElementById("context-options");
-
-    options.innerHTML = "";
-
-
-    if (file.type === "folder") {
-
-        addContextOption(
-            "🎨 Personalizar pasta",
-            () => openFolderModal(file)
-        );
-
-    }
-
-
-    addContextOption(
-        "🏷️ Adicionar tags",
-        () => openTagManager(file.id)
-    );
-
-
-    if (file.type !== "folder") {
-
-        addContextOption(
-            "🔄 Converter arquivo",
-            () => openConvertModal(file)
-        );
-
-    }
-
-
-    addContextOption(
-        "🗑️ Excluir",
-        () => deleteFile(file.id)
-    );
-
-
-    menu.classList.remove("hidden");
-
-    menu.style.left = `${event.clientX}px`;
-
-    menu.style.top = `${event.clientY}px`;
-}
-
-
-function addContextOption(text, action) {
-
-    const li = document.createElement("li");
-
-    li.textContent = text;
-
-    li.addEventListener("click", event => {
-
-        event.stopPropagation();
-
-        closeContextMenu();
-
-        action();
-
-    });
-
-    document
-        .getElementById("context-options")
-        .appendChild(li);
-}
-
-
-function closeContextMenu() {
-
-    document
-        .getElementById("context-menu")
-        .classList.add("hidden");
-
-}
-
-
-/* =========================================================
-   PERSONALIZAR PASTA
-   ========================================================= */
-
-function openFolderModal(file) {
-
-    currentFileForAction = file.id;
-
-    document.getElementById("folder-icon-input").value =
-        file.icon;
-
-    document.getElementById("folder-color-input").value =
-        file.color || "#e8a317";
-
-    document
-        .getElementById("modal-folder")
-        .classList.remove("hidden");
-}
-
-
-function saveFolderCustomization() {
-
-    const file =
-        files.find(f => f.id === currentFileForAction);
-
-    if (!file) return;
-
-    file.icon =
-        document.getElementById("folder-icon-input").value ||
-        "📁";
-
-    file.color =
-        document.getElementById("folder-color-input").value;
-
-    closeModals();
-
-    renderGrid();
-
-}
-
-
-/* =========================================================
-   MODAL TAGS
-   ========================================================= */
-
-function openTagManager(fileId = null) {
-
-    const modal =
-        document.getElementById("modal-tags");
-
-    const select =
-        document.getElementById("tag-file-select");
-
-
-    select.innerHTML = "";
-
-
-    files.forEach(file => {
-
-        const option =
-            document.createElement("option");
-
-        option.value = file.id;
-
-        option.textContent =
-            `${file.icon} ${file.name}`;
-
-        select.appendChild(option);
-
-    });
-
-
-    if (fileId !== null) {
-
-        select.value = fileId;
-
-    }
-
-
-    selectedTagFile =
-        Number(select.value);
-
-
-    select.onchange = () => {
-
-        selectedTagFile =
-            Number(select.value);
-
-        renderSelectedFileTags();
-
-    };
-
-
-    renderSelectedFileTags();
-
-    updateAvailableTags();
-
-    modal.classList.remove("hidden");
-}
-
-
-/* =========================================================
-   TAGS DO ARQUIVO SELECIONADO
-   ========================================================= */
-
-function renderSelectedFileTags() {
-
-    const file =
-        files.find(f => f.id === selectedTagFile);
-
-    const container =
-        document.getElementById("selected-file-tags");
-
-    container.innerHTML = "";
-
-
-    if (!file) return;
-
-
-    file.tags.forEach(tag => {
-
-        const chip =
-            document.createElement("span");
-
-        chip.className = "tag-chip";
-
-        chip.innerHTML = `
-            #${tag}
-            <button onclick="removeTag('${tag}')">
-                ×
-            </button>
-        `;
-
-        container.appendChild(chip);
-
-    });
-
-}
-
-
-/* =========================================================
-   ADICIONAR TAG
-   ========================================================= */
-
-function addTagToSelectedFile() {
-
-    const input =
-        document.getElementById("new-tag-input");
-
-    let tag =
-        input.value.trim().toLowerCase();
-
-
-    if (!tag) return;
-
-
-    const file =
-        files.find(f => f.id === selectedTagFile);
-
-    if (!file) return;
-
-
-    tag = tag.replace(/\s+/g, "-");
-
-
-    if (!file.tags.includes(tag)) {
-
-        file.tags.push(tag);
-
-    }
-
-
-    input.value = "";
-
-    renderSelectedFileTags();
-
-    updateAvailableTags();
-
-}
-
-
-/* =========================================================
-   REMOVER TAG
-   ========================================================= */
-
-function removeTag(tag) {
-
-    const file =
-        files.find(f => f.id === selectedTagFile);
-
-    if (!file) return;
-
-    file.tags =
-        file.tags.filter(t => t !== tag);
-
-    renderSelectedFileTags();
-
-    updateAvailableTags();
-
-}
-
-
-/* =========================================================
-   TAGS EXISTENTES
-   ========================================================= */
-
-function getAllTags() {
-
-    const tags = new Set();
-
-    files.forEach(file => {
-
-        file.tags.forEach(tag => {
-            tags.add(tag);
-        });
-
-    });
-
-    return [...tags].sort();
-}
-
-
-function updateAvailableTags() {
-
-    const container =
-        document.getElementById("available-tags-list");
-
-    if (!container) return;
-
-    container.innerHTML = "";
-
-
-    getAllTags().forEach(tag => {
-
-        const button =
-            document.createElement("button");
-
-        button.className = "available-tag";
-
-        button.textContent = "#" + tag;
-
-        button.onclick = () => {
-
-            document.getElementById("new-tag-input").value = tag;
-
         };
-
-        container.appendChild(button);
-
+        
+        div.oncontextmenu = (e) => {
+            e.preventDefault();
+            openContextMenu(e, file);
+        };
+        grid.appendChild(div);
     });
-
 }
 
-
-/* =========================================================
-   SALVAR TAGS
-   ========================================================= */
-
-function saveTags() {
-
-    renderGrid();
-
-    if (graphMode) {
-        renderGraph();
+/* ================= GRAPH RENDER (VIS.JS) ================= */
+function initGraph(data = files) {
+    if(currentView !== 'graph') return;
+    const container = document.getElementById('graph-container');
+    
+    const searchTerm = document.getElementById('searchInput').value;
+    let graphFiles = data;
+    
+    if (searchTerm === '' && currentFolderId === null) {
+        graphFiles = files.filter(f => currentFocus === 'all' || f.focus === currentFocus);
     }
 
-    closeModals();
-
-}
-
-
-/* =========================================================
-   GRAFO
-   ========================================================= */
-
-function toggleViewMode() {
-
-    graphMode = !graphMode;
-
-
-    const grid =
-        document.getElementById("file-grid");
-
-    const graph =
-        document.getElementById("graph-view");
-
-    const button =
-        document.getElementById("view-mode-button");
-
-
-    if (graphMode) {
-
-        grid.classList.add("hidden");
-
-        graph.classList.remove("hidden");
-
-        button.innerHTML = "🗂️ Ver arquivos";
-
-        button.setAttribute("aria-pressed", "true");
-
-        renderGraph();
-
-    } else {
-
-        graph.classList.add("hidden");
-
-        grid.classList.remove("hidden");
-
-        button.innerHTML = "🕸️ Ver grafo";
-
-        button.setAttribute("aria-pressed", "false");
-
-    }
-
-}
-
-
-/* =========================================================
-   CONSTRUÇÃO DO GRAFO
-   ========================================================= */
-
-function renderGraph() {
-
-    const container =
-        document.getElementById("graph-container");
-
-    container.innerHTML = "";
-
-    if (container.clientWidth === 0 || container.clientHeight === 0) {
-        return;
-    }
-
-    const contextFiles = getVisibleFiles();
-    const selectedTag = updateGraphTagOptions(contextFiles);
-    const graphFiles = contextFiles.filter(file =>
-        file.tags.length > 0 &&
-        (selectedTag === "all" || file.tags.includes(selectedTag))
-    );
-
-    const graphTags = selectedTag === "all" ?
-        [...new Set(graphFiles.flatMap(file => file.tags))].sort((a, b) =>
-            a.localeCompare(b, "pt-BR")
-        ) :
-        [selectedTag];
-
-    const connections = graphFiles.reduce((total, file) =>
-        total + file.tags.filter(tag => graphTags.includes(tag)).length, 0
-    );
-
-    document.getElementById("graph-info").textContent =
-        `${graphFiles.length} ${graphFiles.length === 1 ? "arquivo" : "arquivos"} • ` +
-        `${graphTags.length} ${graphTags.length === 1 ? "tag" : "tags"} • ` +
-        `${connections} ${connections === 1 ? "conexão" : "conexões"}`;
-
-    if (graphFiles.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "graph-empty";
-        empty.innerHTML = `
-            <span>🔎</span>
-            <strong>Nenhum arquivo encontrado</strong>
-            <p>Ajuste o foco, o tipo de arquivo ou a tag selecionada.</p>
-        `;
-        container.appendChild(empty);
-        return;
-    }
-
-    const width = Math.max(container.clientWidth, 720);
-    const rowHeight = 72;
-    const height = Math.max(
-        container.clientHeight,
-        Math.max(graphTags.length, graphFiles.length) * rowHeight + 100
-    );
-    const tagX = 125;
-    const fileX = width - 145;
-    const tagPositions = getGraphColumnPositions(graphTags, tagX, height);
-    const filePositions = getGraphColumnPositions(graphFiles, fileX, height);
-
-    const canvas = document.createElement("div");
-    canvas.className = "graph-canvas";
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
-
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.classList.add("graph-svg");
-    svg.setAttribute("width", width);
-    svg.setAttribute("height", height);
-    svg.setAttribute("aria-hidden", "true");
-    canvas.appendChild(svg);
+    let nodesArray = [];
+    let edgesArray = [];
+    let tagsSet = new Set();
 
     graphFiles.forEach(file => {
-        const filePosition = filePositions.get(file);
+        nodesArray.push({
+            id: file.id, label: file.name, shape: 'box',
+            color: { background: file.color && file.color !== 'transparent' ? file.color : '#2c2c2f', border: '#444' },
+            font: { color: '#e2e2e2', size: 12 }, borderWidth: 1
+        });
+        file.tags.forEach(t => tagsSet.add(t));
+    });
 
-        file.tags
-            .filter(tag => tagPositions.has(tag))
-            .forEach(tag => {
-                const tagPosition = tagPositions.get(tag);
-                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                const middleX = (tagPosition.x + filePosition.x) / 2;
+    tagsSet.forEach(tag => {
+        nodesArray.push({
+            id: 'tag_' + tag, label: '#' + tag, shape: 'dot', size: 12,
+            color: { background: '#ff5e62', border: '#ff5e62' },
+            font: { color: '#ff7679', size: 12, bold: true }
+        });
+    });
 
-                path.setAttribute(
-                    "d",
-                    `M ${tagPosition.x + 72} ${tagPosition.y} ` +
-                    `C ${middleX} ${tagPosition.y}, ${middleX} ${filePosition.y}, ` +
-                    `${filePosition.x - 92} ${filePosition.y}`
-                );
-                path.classList.add("graph-line");
-                path.dataset.tag = tag;
-                path.dataset.fileId = file.id;
-                svg.appendChild(path);
+    graphFiles.forEach(file => {
+        file.tags.forEach(tag => {
+            edgesArray.push({
+                from: file.id, to: 'tag_' + tag,
+                color: { color: '#444', opacity: 0.4 }, width: 1
             });
-    });
-
-    graphTags.forEach(tag => {
-        const position = tagPositions.get(tag);
-        const element = createGraphNode("tag", tag, position);
-
-        element.title = `Mostrar somente arquivos com a tag #${tag}`;
-        element.addEventListener("click", () => {
-            document.getElementById("graph-tag-filter").value = tag;
-            renderGraph();
-        });
-        addGraphHighlightEvents(element, "tag", tag, canvas, graphFiles, graphTags);
-        canvas.appendChild(element);
-    });
-
-    graphFiles.forEach(file => {
-        const position = filePositions.get(file);
-        const element = createGraphNode("file", file, position);
-
-        element.title = `${file.name} — clique para gerenciar tags`;
-        element.addEventListener("click", () => openTagManager(file.id));
-        addGraphHighlightEvents(element, "file", String(file.id), canvas, graphFiles, graphTags);
-        canvas.appendChild(element);
-    });
-
-    const legend = document.createElement("div");
-    legend.className = "graph-legend";
-    legend.innerHTML = `
-        <span><i class="legend-tag"></i> Tags</span>
-        <span><i class="legend-file"></i> Arquivos e pastas</span>
-        <small>Passe o mouse sobre um item para destacar suas relações</small>
-    `;
-    canvas.appendChild(legend);
-    container.appendChild(canvas);
-}
-
-
-/* =========================================================
-   APOIO AO GRAFO
-   ========================================================= */
-
-function updateGraphTagOptions(contextFiles) {
-
-    const select = document.getElementById("graph-tag-filter");
-    const previousValue = select.value || "all";
-    const tags = [...new Set(contextFiles.flatMap(file => file.tags))]
-        .sort((a, b) => a.localeCompare(b, "pt-BR"));
-
-    select.innerHTML = "";
-
-    const allOption = document.createElement("option");
-    allOption.value = "all";
-    allOption.textContent = "Todas as tags";
-    select.appendChild(allOption);
-
-    tags.forEach(tag => {
-        const option = document.createElement("option");
-        option.value = tag;
-        option.textContent = `#${tag}`;
-        select.appendChild(option);
-    });
-
-    select.value = tags.includes(previousValue) ? previousValue : "all";
-    return select.value;
-}
-
-
-function getGraphColumnPositions(items, x, height) {
-
-    const positions = new Map();
-    const top = 78;
-    const bottom = height - 42;
-    const gap = items.length > 1 ? (bottom - top) / (items.length - 1) : 0;
-
-    items.forEach((item, index) => {
-        positions.set(item, {
-            x,
-            y: items.length === 1 ? height / 2 : top + index * gap
         });
     });
 
-    return positions;
-}
+    const graphData = { nodes: new vis.DataSet(nodesArray), edges: new vis.DataSet(edgesArray) };
+    const options = { physics: { forceAtlas2Based: { gravitationalConstant: -60, centralGravity: 0.01, springLength: 100 }, solver: 'forceAtlas2Based' } };
 
+    if (network) network.destroy();
+    network = new vis.Network(container, graphData, options);
 
-function createGraphNode(type, value, position) {
-
-    const element = document.createElement("button");
-    element.type = "button";
-    element.className = `graph-node ${type === "tag" ? "tag-node" : "file-node"}`;
-    element.dataset.kind = type;
-    element.dataset.value = type === "tag" ? value : value.id;
-    element.style.left = `${position.x}px`;
-    element.style.top = `${position.y}px`;
-
-    const icon = document.createElement("span");
-    icon.className = "node-icon";
-    icon.textContent = type === "tag" ? "#" : value.icon;
-
-    const content = document.createElement("span");
-    content.className = "node-content";
-
-    const name = document.createElement("span");
-    name.className = "node-name";
-    name.textContent = type === "tag" ? value : value.name;
-    content.appendChild(name);
-
-    if (type === "file") {
-        const meta = document.createElement("span");
-        meta.className = "node-meta";
-        meta.textContent = `${formatSize(value.size)} • ${value.tags.length} ` +
-            `${value.tags.length === 1 ? "tag" : "tags"}`;
-        content.appendChild(meta);
-    }
-
-    element.append(icon, content);
-    return element;
-}
-
-
-function addGraphHighlightEvents(element, kind, value, canvas, graphFiles, graphTags) {
-
-    element.addEventListener("mouseenter", () => {
-        const relatedFiles = new Set();
-        const relatedTags = new Set();
-
-        if (kind === "tag") {
-            relatedTags.add(value);
-            graphFiles
-                .filter(file => file.tags.includes(value))
-                .forEach(file => relatedFiles.add(String(file.id)));
-        } else {
-            relatedFiles.add(value);
-            const file = graphFiles.find(item => String(item.id) === value);
-            if (!file) return;
-            file.tags
-                .filter(tag => graphTags.includes(tag))
-                .forEach(tag => relatedTags.add(tag));
+    network.on("click", (params) => {
+        if (params.nodes.length > 0 && typeof params.nodes[0] === 'number') {
+            openInspector(files.find(f => f.id === params.nodes[0]));
         }
-
-        canvas.querySelectorAll(".graph-node").forEach(node => {
-            const related = node.dataset.kind === "tag" ?
-                relatedTags.has(node.dataset.value) :
-                relatedFiles.has(node.dataset.value);
-            node.classList.toggle("is-dimmed", !related);
-            node.classList.toggle("is-highlighted", related);
-        });
-
-        canvas.querySelectorAll(".graph-line").forEach(line => {
-            const related = kind === "tag" ?
-                line.dataset.tag === value :
-                line.dataset.fileId === value;
-            line.classList.toggle("is-dimmed", !related);
-            line.classList.toggle("highlight", related);
-        });
-    });
-
-    element.addEventListener("mouseleave", () => {
-        canvas.querySelectorAll(".graph-node, .graph-line").forEach(item => {
-            item.classList.remove("is-dimmed", "is-highlighted", "highlight");
-        });
     });
 }
 
+/* ================= INSPETOR E IA TAGGER ================= */
+function openInspector(file) {
+    document.getElementById('inspector-panel').classList.remove('hidden-panel');
+    const content = document.getElementById('inspector-content');
+    
+    let iconStyle = (file.type === 'folder' && file.color) ? `background-color: ${file.color};` : '';
+    const tagsHtml = file.tags.map(t => `<span class="tag-chip">#${t}</span>`).join('');
 
-/* =========================================================
-   LIMPEZA
-   ========================================================= */
-
-function renderCleanup() {
-
-    const duplicateContainer =
-        document.getElementById("cleanup-duplicates");
-
-    const unusedContainer =
-        document.getElementById("cleanup-unused");
-
-
-    duplicateContainer.innerHTML = "";
-
-    unusedContainer.innerHTML = "";
-
-
-    const duplicates = [
-        files.find(f => f.name === "Evento_UNEB.jpg"),
-        files.find(f => f.name === "anotacoes.txt")
-    ].filter(Boolean);
-
-
-    duplicates.forEach(file => {
-
-        const item =
-            document.createElement("div");
-
-        item.className = "cleanup-item";
-
-        item.innerHTML = `
-
-            <div>
-                ${file.icon}
-                <strong>${file.name}</strong>
-                <small>
-                    ${formatSize(file.size)}
-                </small>
-            </div>
-
-            <button onclick="deleteFile(${file.id})">
-                Excluir
-            </button>
-
-        `;
-
-        duplicateContainer.appendChild(item);
-
-    });
-
-
-    const unused = files
-        .filter(file => file.type !== "folder")
-        .slice(-3);
-
-
-    unused.forEach(file => {
-
-        const item =
-            document.createElement("div");
-
-        item.className = "cleanup-item";
-
-        item.innerHTML = `
-
-            <div>
-                ${file.icon}
-                <strong>${file.name}</strong>
-                <small>
-                    Modificado em ${file.date}
-                </small>
-            </div>
-
-            <button onclick="deleteFile(${file.id})">
-                Excluir
-            </button>
-
-        `;
-
-        unusedContainer.appendChild(item);
-
-    });
-
+    content.innerHTML = `
+        <div class="file-preview-card">
+            <div class="icon" style="${iconStyle}">${file.icon}</div>
+            <div class="title">${file.name}</div>
+        </div>
+        <div class="info-row"><span class="info-label">Tipo:</span><span>${file.type.toUpperCase()}</span></div>
+        <div class="info-row"><span class="info-label">Tamanho:</span><span>${file.size ? (file.size/1000).toFixed(1) + ' MB' : '--'}</span></div>
+        <div class="tags-container"><h4>Tags Associadas</h4>${tagsHtml}</div>
+        <button class="btn-action-full" onclick="runAutoTagIA(${file.id})">Analisar Contexto (IA)</button>
+    `;
 }
+function hideInspector() { document.getElementById('inspector-panel').classList.add('hidden-panel'); }
 
-
-/* =========================================================
-   EXCLUIR
-   ========================================================= */
-
-function deleteFile(id) {
-
-    const file =
-        files.find(f => f.id === id);
-
+function runAutoTagIA(fileId) {
+    const file = files.find(f => f.id === fileId);
     if (!file) return;
 
+    const nameLower = file.name.toLowerCase();
+    let newTags = [];
 
-    const confirmed =
-        confirm(
-            `Excluir "${file.name}"?`
-        );
-
-
-    if (!confirmed) return;
-
-
-    files =
-        files.filter(f => f.id !== id);
-
-
-    renderGrid();
-
-    renderCleanup();
-
-    if (graphMode) {
-        renderGraph();
+    // IA Genérica analisando pelo nome/extensão base
+    if (nameLower.includes('yaml') || nameLower.includes('py') || nameLower.includes('config')) {
+        newTags.push("desenvolvimento", "backend", "infra");
+    }
+    if (nameLower.includes('api') || nameLower.includes('sql') || nameLower.includes('ts')) {
+        newTags.push("web", "typescript", "database");
+    }
+    if (nameLower.includes('ingles') || nameLower.includes('certificado')) {
+        newTags.push("estudos", "educacao");
+    }
+    if (nameLower.includes('tcc') || nameLower.includes('redes')) {
+        newTags.push("academico", "universidade");
     }
 
+    let addedCount = 0;
+    newTags.forEach(tag => {
+        if (!file.tags.includes(tag)) {
+            file.tags.push(tag);
+            addedCount++;
+        }
+    });
+
+    if (addedCount > 0) {
+        alert(`O modelo analisou o documento e adicionou ${addedCount} novas tags de contexto.`);
+        applyFilters();
+        openInspector(file);
+    } else {
+        alert('A IA determinou que as tags atuais já representam completamente o arquivo.');
+    }
 }
 
+/* ================= MENU DE CONTEXTO ================= */
+function openContextMenu(e, file) {
+    contextTargetId = file.id;
+    const menu = document.getElementById("context-menu");
+    const options = document.getElementById("context-options");
+    
+    let html = '';
+    if (file.type === 'folder') {
+        html += `<li onclick="openEditFolderModal()">Personalizar Pasta</li>`;
+    } else {
+        html += `<li onclick="openConvertModal()">Conversor Inteligente</li>`;
+    }
+    html += `<li style="color: var(--danger)" onclick="deleteFile(${file.id})">Excluir</li>`;
+    
+    options.innerHTML = html;
+    menu.style.left = `${e.clientX}px`;
+    menu.style.top = `${e.clientY}px`;
+    menu.classList.remove("hidden");
+}
+function closeContextMenu() { document.getElementById("context-menu").classList.add("hidden"); }
 
-/* =========================================================
-   CONVERSÃO
-   ========================================================= */
-
-function openConvertModal(file) {
-
-    currentFileForAction = file.id;
-
-    document
-        .getElementById("convert-filename")
-        .textContent =
-        `Arquivo: ${file.name}`;
-
-
-    document
-        .getElementById("modal-convert")
-        .classList.remove("hidden");
-
+/* ================= MODAIS: CONVERSÃO INTELIGENTE E PASTAS ================= */
+function openEditFolderModal() {
+    const file = files.find(f => f.id === contextTargetId);
+    document.getElementById('folder-icon').value = file.icon;
+    document.getElementById('folder-color').value = file.color === 'transparent' ? '#1e1e20' : file.color;
+    document.getElementById('modal-folder').classList.remove('hidden');
 }
 
+function saveFolder() {
+    const file = files.find(f => f.id === contextTargetId);
+    file.icon = document.getElementById('folder-icon').value || '📁';
+    file.color = document.getElementById('folder-color').value;
+    closeModals();
+    applyFilters();
+    if(document.getElementById('inspector-panel').classList.contains('hidden-panel') === false) openInspector(file);
+}
+
+function openConvertModal() {
+    const file = files.find(f => f.id === contextTargetId);
+    document.getElementById('convert-target-name').textContent = `Arquivo: ${file.name}`;
+    
+    const select = document.getElementById('convert-format');
+    select.innerHTML = '';
+    
+    if (file.type === 'image') {
+        select.innerHTML = `
+            <option value="png">PNG (.png)</option>
+            <option value="jpg">JPEG (.jpg)</option>
+            <option value="webp">WebP (.webp)</option>
+        `;
+    } else if (file.type === 'pdf') {
+        select.innerHTML = `
+            <option value="docx">Word (.docx)</option>
+            <option value="txt">Texto Simples (.txt)</option>
+        `;
+    } else if (file.type === 'document') {
+        select.innerHTML = `
+            <option value="pdf">PDF (.pdf)</option>
+            <option value="zip">Compactar (.zip)</option>
+        `;
+    } else {
+        select.innerHTML = `<option value="zip">Compactar (.zip)</option>`;
+    }
+
+    document.getElementById('modal-convert').classList.remove('hidden');
+}
 
 function executeConversion() {
-
-    const file =
-        files.find(f => f.id === currentFileForAction);
-
-    if (!file) return;
-
-
-    const format =
-        document.getElementById("convert-format").value;
-
-
-    alert(
-        `Protótipo: ${file.name} seria convertido para ${format.toUpperCase()}.`
-    );
-
-
+    const file = files.find(f => f.id === contextTargetId);
+    const format = document.getElementById('convert-format').value;
+    alert(`O arquivo ${file.name} foi enfileirado para conversão em .${format}.`);
     closeModals();
-
 }
 
+function closeModals() { document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden')); }
 
-/* =========================================================
-   FECHAR MODAIS
-   ========================================================= */
+function deleteFile(id) {
+    if(confirm('Tem certeza que deseja excluir este arquivo?')) {
+        files = files.filter(f => f.id !== id);
+        applyFilters();
+        if(currentView === 'cleanup') renderCleanupView();
+        hideInspector();
+    }
+}
 
-function closeModals() {
+/* ================= LIBERAR ESPAÇO ================= */
+function renderCleanupView() {
+    const duplicates = files.filter(f => f.duplicateOf);
+    const unused = files.filter(f => f.unused);
+    
+    const dupList = document.getElementById('duplicates-list');
+    const unList = document.getElementById('unused-list');
+    
+    dupList.innerHTML = duplicates.length ? '' : '<p style="color:#666">Nenhum arquivo duplicado encontrado.</p>';
+    duplicates.forEach(f => {
+        const original = files.find(orig => orig.id === f.duplicateOf);
+        dupList.innerHTML += `
+            <div class="cleanup-item">
+                <div class="info">
+                    <span style="font-size:24px">${f.icon}</span>
+                    <div>
+                        <strong>${f.name}</strong><br>
+                        <small style="color:#888">Cópia de: ${original ? original.name : 'Desconhecido'} - ${(f.size/1000).toFixed(1)} MB</small>
+                    </div>
+                </div>
+                <button class="btn-delete" onclick="deleteFile(${f.id})">Apagar Cópia</button>
+            </div>
+        `;
+    });
 
-    document
-        .querySelectorAll(".modal")
-        .forEach(modal => {
-
-            modal.classList.add("hidden");
-
-        });
-
+    unList.innerHTML = unused.length ? '' : '<p style="color:#666">Nenhum arquivo antigo encontrado.</p>';
+    unused.forEach(f => {
+        unList.innerHTML += `
+            <div class="cleanup-item">
+                <div class="info">
+                    <span style="font-size:24px">${f.icon}</span>
+                    <div>
+                        <strong>${f.name}</strong><br>
+                        <small style="color:#888">Último acesso: ${f.lastOpened} - ${(f.size/1000).toFixed(1)} MB</small>
+                    </div>
+                </div>
+                <button class="btn-delete" onclick="deleteFile(${f.id})">Apagar Arquivo</button>
+            </div>
+        `;
+    });
 }
